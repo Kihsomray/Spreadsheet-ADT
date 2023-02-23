@@ -12,7 +12,7 @@
 Your task in this project is to write a spreadsheet ADT and a program that allows the user
 to assign formulas to cells, view the formulas in the cells of the spreadsheet, and view the
 values computed for all the cells in the spreadsheet.
-##Organization
+## Organization
 Be sure to organize your files in a sensible way. You will need files for a stack, a queue,
 an expression tree, a spreadsheet, and a variety of other files (such as one for the
 application itself and probably a separate one for the GUI). 
