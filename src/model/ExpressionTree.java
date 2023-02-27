@@ -1,3 +1,5 @@
+package model;
+
 public class ExpressionTree<Element> {
 
     private class Node {
