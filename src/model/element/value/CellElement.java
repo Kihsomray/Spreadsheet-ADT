@@ -17,7 +17,7 @@ public class CellElement implements ValueElement {
 
     @Override
     public int getValue() {
-        return ss.;
+        return 0;
     }
 
     private void setRowColumn(final String location) {
