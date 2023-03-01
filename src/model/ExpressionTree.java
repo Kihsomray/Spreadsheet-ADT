@@ -2,26 +2,32 @@ package model;
 
 import model.element.Element;
 import model.element.value.LiteralElement;
+import model.element.value.ValueElement;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
+/**
+ * 
+ */
 public class ExpressionTree {
 
     private final Node headerNode;
 
     Set<Character> operators = Set.of('+', '-', '*', '/');
 
-    public ExpressionTree(final String expression) {
-        headerNode = constructTree(expression);
+    public ExpressionTree(final String expression, final SpreadSheet ss) {
+        headerNode = constructTree(expression, ss);
     }
 
-
-    private Node constructTree(final String input) {
+    private Node constructTree(final String input, final SpreadSheet ss) {
         char[] charArray = input.toCharArray();
         Stack<Node> stack = new Stack<>();
         Node current = headerNode;
-        StringBuilder sb = new StringBuilder();
+        List<Character> chars = new ArrayList<>();
 
         for (int i = 0; i < charArray.length; i++) {
             char c = charArray[i];
@@ -36,22 +42,13 @@ public class ExpressionTree {
             } else if (c == ')') {
                 stack.pop();
             } else if (Utility.isAlphaNumerical(c)) {
-                if (c == ' ') continue;
-                sb.append(c);
-                if (charArray.length - 1 >= i && Utility.isAlphaNumerical(charArray[i + 1])) {
-                    continue;
+                chars.add(c);
+                if (charArray.length - 1 >= i || !Utility.isAlphaNumerical(charArray[i + 1])) {
+                    current.parent.element = ValueElement.generateFromArray(chars.stream().map(val -> Character.toString(val)).collect(Collectors.joining()).toCharArray(), ss);
+                    current.parent = stack.pop();
+                    current = current.parent;
+                    chars = new ArrayList<>();
                 }
-                String s = sb.toString();
-                try {
-
-                } catch (final Exception e) {
-                    // still working on it
-                }
-
-
-
-
-
             }
         }
 
