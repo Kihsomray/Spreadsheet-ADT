@@ -17,7 +17,6 @@ public class Main {
     public static void main(final String[] args) {
 
         // start of code
-        System.out.println("git test");
 
     }
 
