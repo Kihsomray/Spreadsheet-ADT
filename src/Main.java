@@ -17,12 +17,7 @@ public class Main {
     public static void main(final String[] args) {
 
         // start of code
-        testMethod();
 
-    }
-
-    public static void testMethod() {
-        System.out.println("Hello world!");
     }
 
 }
