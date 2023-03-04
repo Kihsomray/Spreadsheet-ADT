@@ -6,7 +6,6 @@ import model.element.value.CellElement;
 import model.element.value.LiteralElement;
 import model.element.value.ValueElement;
 
-import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -20,8 +19,6 @@ public class ExpressionTree {
 
     private final Node myHeaderNode;
     private final SpreadSheet mySpreadSheet;
-
-    Set<Character> operators = Set.of('+', '-', '*', '/', ')');
 
     /**
      * Generates an expression tree given a formula and spreadsheet.
@@ -89,7 +86,7 @@ public class ExpressionTree {
 
 
             // ASSERT: ch now contains the first character of the next token.
-            if (operators.contains(c)) {
+            if (OperationElement.OPERATORS.contains(c)) {
 
                 // push operatorTokens onto the output stack until
                 // we reach an operator on the operator stack that has
@@ -150,6 +147,26 @@ public class ExpressionTree {
         return returnStack;
     }
 
+    /**
+     * Performs calculation on current expression tree.
+     *
+     * @return calculated value of the expression tree.
+     */
+    public int calculate() {
+        return calculate(myHeaderNode);
+    }
+
+    // calculates recursively
+    private int calculate(Node node) {
+        if (node == null) throw new IllegalArgumentException("The expression is invalid!");
+        if (node.element instanceof OperationElement) {
+            return ((OperationElement) node.element).evaluate(calculate(node.left), calculate(node.right));
+        } else {
+            return ((ValueElement) node.element).getValue();
+        }
+    }
+
+    // Helper class for Expression Tree
     private class Node {
         Element element;
         Node right;

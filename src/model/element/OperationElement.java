@@ -1,5 +1,7 @@
 package model.element;
 
+import java.util.Set;
+
 /**
  * A class to store operations to be used for Cells and Literals.
  *
@@ -7,6 +9,8 @@ package model.element;
  * @version 2/27/2023
  */
 public class OperationElement implements Element {
+
+    public static final Set<Character> OPERATORS = Set.of('+', '-', '*', '/', ')');
 
     /**
      * The stored operation. (+, -, *, /, ))
@@ -35,6 +39,16 @@ public class OperationElement implements Element {
 
     public boolean isParenthesis() {
         return myOperation == Operation.LEFT_PARENTHESIS;
+    }
+
+    public int evaluate(int val1, int val2) {
+        return switch (myOperation) {
+            case ADDITION -> val1 + val2;
+            case SUBTRACTION -> val1 - val2;
+            case MULTIPLICATION -> val1 * val2;
+            case DIVISION -> val1 / val2;
+            default -> throw new IllegalArgumentException("Invalid expression");
+        };
     }
 
     public enum Operation {

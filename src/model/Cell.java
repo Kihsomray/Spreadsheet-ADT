@@ -1,60 +1,88 @@
 package model;
 
 import java.util.LinkedList;
+import java.util.Objects;
 
-public class Cell {
+class Cell {
 
-    //field to contain the actual value of the cell.
-    private int value;
+    /**
+     * The integer value of the cell.
+     */
+    private int myCellValue;
 
-    //field to contain the expression of the cell.
-    private ExpressionTree expression;
+    /**
+     * The expression tree that defines the cell's value.
+     */
+    private ExpressionTree myExpressionTree;
 
-    //field to contain the cells that depend on this cell.
-    private LinkedList<Cell> dependencyList = new LinkedList<>();
+    /**
+     * A LinkedList of cells that depend on this one.
+     */
+    private LinkedList<Cell> myDependents = new LinkedList<>();
+
+    /**
+     * The original formula entered by the user as a String.
+     */
+    private String myFormulaInput;
+
+    /**
+     * Reference to the spreadsheet this cell is in.
+     */
+    private SpreadSheet mySpreadSheet;
 
     /**
      * Constructor for the cell object.
-     * @param input the expression stored in the cell.
+     * @param theInput the expression stored in the cell.
      */
-    public Cell(final String input, final SpreadSheet ss) {
-        expression = new ExpressionTree(input, ss);
-        value = calculate(expression);
+    Cell(final String theInput, final SpreadSheet theSpreadSheet) {
+        refreshCell(theInput);
+        mySpreadSheet = theSpreadSheet;
     }
 
     /**
-     * Calculates the value of the expression and returns it.
-     *
-     * @param eTree the expression of the cell.
-     * @return the value of the expression.
+     * Updates the cell with the new formula, if it's indeed a new formula.
+     * @param theInput The String input from the table.
      */
-    private int calculate(ExpressionTree eTree) {
-        return 0;
+    void refreshCell(final String theInput) {
+        if (!Objects.equals(theInput, myFormulaInput)) {
+            myExpressionTree = new ExpressionTree(theInput, mySpreadSheet);
+            myFormulaInput = theInput;
+            updateCellValue();
+        }
     }
 
     /**
-     * Returns the value of the cell.
-     *
-     * @return the value.
+     * Getter method for the cell's integer value.
+     * @return the integer cell value.
      */
-    public int getValue() {
-        return value;
+    public int getCellValue() {
+        return myCellValue;
     }
 
     /**
      * Method to update the values of dependent cells.
      */
     public void updateDependents(){
-        for (Cell c : dependencyList) {
-            c.setValue(c.expression);
+        for (Cell c : myDependents) {
+            c.updateCellValue();
         }
     }
 
     /**
      * Helper method to update the value of the cell.
-     * @param theExpression used to update the value.
+     * Calls updateDependents to also update any necessary dependencies after this.
      */
-    private void setValue(ExpressionTree theExpression) {
-        value = calculate(theExpression);
+    private void updateCellValue() {
+        myExpressionTree.calculate();
+        updateDependents(); //how prevent cycle
+    }
+
+
+    /**
+     * Getter method for the original formula used for the Cell.
+     * @return The original String input.
+     */
+    public String getFormula() {
+        return myFormulaInput;
     }
 }
