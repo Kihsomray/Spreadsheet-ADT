@@ -6,66 +6,86 @@ import model.element.value.CellElement;
 import model.element.value.LiteralElement;
 import model.element.value.ValueElement;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 /**
- * 
+ * Expression Tree Class: Used for parsing various
+ * expressions with easy recalculation.
+ *
+ * @author Michael N Yarmoshik
+ * @version 1.0.0
  */
 public class ExpressionTree {
 
-    private final Node headerNode;
+    private final Node myHeaderNode;
+    private final SpreadSheet mySpreadSheet;
 
     Set<Character> operators = Set.of('+', '-', '*', '/', ')');
 
-    public ExpressionTree(final String expression, final SpreadSheet ss) {
-        headerNode = constructTree(expression, ss);
-    }
-
-    private Node constructTree(final String input, final SpreadSheet ss) {
-        return null;
+    /**
+     * Generates an expression tree given a formula and spreadsheet.
+     *
+     * @param theExpression Expression to parse
+     * @param theSpreadSheet Spreadsheet of the cell
+     */
+    public ExpressionTree(final String theExpression, final SpreadSheet theSpreadSheet) {
+        myHeaderNode = constructTree(expressionPostfix(theExpression));
+        mySpreadSheet = theSpreadSheet;
     }
 
     /**
-     * getFormula
+     * Constructs a tree from a stack based post-fix expression.
      *
-     * Given a string that represents a formula that is an infix
-     * expression, return a stack of Tokens so that the expression,
-     * when read from the bottom of the stack to the top of the stack,
-     * is a postfix expression.
-     *
-     * A formula is defined as a sequence of tokens that represents
-     * a legal infix expression.
+     * @param theStack Postfix expression stack
+     * @return Converted tree from stack
+     */
+    private Node constructTree(final Stack<Element> theStack) {
+        if (theStack.isEmpty()) throw new IndexOutOfBoundsException("Expression cannot be empty");
+
+        final Element element = theStack.pop();  // need to handle stack underflow
+        if (element instanceof ValueElement) {
+            // Literals and Cells are leaves in the expression tree
+            return new Node(element);
+        } else {
+            // Continue finding tokens that will form the
+            // right subtree and left subtree.
+            Node rightSubtree = constructTree(theStack);
+            Node leftSubtree  = constructTree(theStack);
+            return new Node(element, leftSubtree, rightSubtree);
+        }
+    }
+
+    /**
+     * Creates postfix stack from infix expression. Errors will be thrown
+     * if illegal expression is passed.
      *
      * A token can consist of a numeric literal, a cell reference, or an
      * operator (+, -, *, /).
      *
-     * Multiplication (*) and division (/) have higher precedence than
-     * addition (+) and subtraction (-).  Among operations within the same
-     * level of precedence, grouping is from left to right.
-     *
      * This algorithm follows the algorithm described in Weiss, pages 105-108.
+     * Forked from method in utils class provided by Donald Chinn.
+     *
+     * @param theExpression String formula to parse
+     * @return Stack of postfix read for tree construction
      */
-    private Stack<Element> expressionPostfix(final String formula, final SpreadSheet ss) {
+    private Stack<Element> expressionPostfix(final String theExpression) {
 
         Stack<OperationElement> operatorStack = new Stack<>();
         Stack<Element> returnStack = new Stack<>();
 
         int index = 0;
 
-        while (index < formula.length()) {
-            char c = formula.charAt(index);
+        while (index < theExpression.length()) {
+            char c = theExpression.charAt(index);
 
             // eliminate whitespace
-            while (index < formula.length()) {
-                if (Character.isWhitespace(formula.charAt(index))) break;
+            while (index < theExpression.length()) {
+                if (Character.isWhitespace(theExpression.charAt(index))) break;
                 index++;
             }
 
-            if (index == formula.length()) throw new IndexOutOfBoundsException("Invalid formula passed for parsing");
+            if (index == theExpression.length()) throw new IndexOutOfBoundsException("Invalid formula passed for parsing");
 
 
             // ASSERT: ch now contains the first character of the next token.
@@ -104,7 +124,7 @@ public class ExpressionTree {
                 int literal = c - '0';
                 index++;
 
-                while (index < formula.length()) {
+                while (index < theExpression.length()) {
                     if (Character.isDigit(c)) {
                         literal = (literal * 10) + (c - '0');
                         index++;
@@ -117,8 +137,8 @@ public class ExpressionTree {
             } else if (Character.isAlphabetic(c)) {
 
                 // We found a cell reference token
-                CellElement cell = new CellElement(ss);
-                index = CellElement.applyValues(formula, index, cell);
+                CellElement cell = new CellElement(mySpreadSheet);
+                index = CellElement.applyValues(theExpression, index, cell);
                 returnStack.push(cell);
 
             } else throw new IllegalArgumentException("Invalid characters contained in formula");
@@ -132,14 +152,17 @@ public class ExpressionTree {
 
     private class Node {
         Element element;
-        Node parent;
-
         Node right;
         Node left;
 
-        public Node(Element element, Node parent) {
-            this.element = element;
-            this.parent = parent;
+        public Node(final Element theElement) {
+            element = theElement;
+        }
+
+        public Node(final Element theElement, final Node theRight, final Node theLeft) {
+            element = theElement;
+            right = theRight;
+            left = theLeft;
         }
 
     }
