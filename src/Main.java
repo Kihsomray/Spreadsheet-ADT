@@ -1,11 +1,13 @@
+import model.ExpressionTree;
+
 /**
  * Main class of the entire program.
  *
  * @author Matt Bauchspies
- * @author O Mbabazi
- * @author N Yarmoshik
+ * @author Elroy O Mbabazi
+ * @author Michael N Yarmoshik
  * @author Max Y Yim
- * @version 1.0.0-SNAPSHOT
+ * @version 3/4/2023
  */
 public class Main {
 
@@ -17,6 +19,9 @@ public class Main {
     public static void main(final String[] args) {
 
         // start of code
+
+        //ExpressionTree tree = new ExpressionTree("   ( 4 + 5 ) * 9   ", null);
+        //System.out.println(tree.calculate());
 
     }
 

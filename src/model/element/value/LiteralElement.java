@@ -41,4 +41,9 @@ public class LiteralElement implements ValueElement {
         myLiteralValue = theValue;
     }
 
+    @Override
+    public String toString() {
+        return "[LE: " + myLiteralValue + "]";
+    }
+
 }

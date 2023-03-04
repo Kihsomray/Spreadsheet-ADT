@@ -40,7 +40,7 @@ public class CellElement implements ValueElement {
         }
         if (formula.length() > index) {
             char c = formula.charAt(index);
-            if (!OperationElement.OPERATORS.contains(formula.charAt(index)) || c != '(' || !Character.isWhitespace(c))
+            if (!OperationElement.OPERATORS.contains(formula.charAt(index)) && c != ')' && !Character.isWhitespace(c))
                 throw new IllegalArgumentException("Invalid formula!");
         }
         if (noRow) throw new IllegalArgumentException("Cell references must contain a Column and Row!");
@@ -53,6 +53,11 @@ public class CellElement implements ValueElement {
     @Override
     public int getValue() {
         return ss.getCellAt(row, column).getCellValue();
+    }
+
+    @Override
+    public String toString() {
+        return "[CE: r-" + row + ", c-" + column + "]";
     }
 
 }

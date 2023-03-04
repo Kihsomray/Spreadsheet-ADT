@@ -6,14 +6,18 @@ import java.util.Set;
  * A class to store operations to be used for Cells and Literals.
  *
  * @author Matt Bauchspies mbauch72@uw.edu
- * @version 2/27/2023
+ * @author Michael Yarmoshik myarmo@uw.edu
+ * @version 3/4/2023
  */
 public class OperationElement implements Element {
 
-    public static final Set<Character> OPERATORS = Set.of('+', '-', '*', '/', ')');
+    /**
+     * All operators in a set.
+     */
+    public static final Set<Character> OPERATORS = Set.of('+', '-', '*', '/', '(', ')');
 
     /**
-     * The stored operation. (+, -, *, /, ))
+     * The stored operation. (+, -, *, /, (, ))
      */
     private final Operation myOperation;
 
@@ -25,22 +29,41 @@ public class OperationElement implements Element {
         myOperation = Operation.fromChar(theOperation);
     }
 
+    /**
+     * Gets operator associated with this element.
+     *
+     * @return Operator associated with this element
+     */
     public char getOperator() {
         return myOperation.character;
     }
 
+    /**
+     * Gets the priority of the operator associated with this element.
+     *
+     * @return Priority of the operator associated with this element
+     */
     public int getPriority() {
         return myOperation.priority;
     }
 
-    public static int getPriority(final char theOperation) {
-        return Operation.fromChar(theOperation).priority;
+    /**
+     * Gets the priority of the operator associated with an element.
+     *
+     * @param theOperator Operator in question
+     * @return Priority of the operator associated with this element
+     */
+    public static int getPriority(final char theOperator) {
+        return Operation.fromChar(theOperator).priority;
     }
 
-    public boolean isParenthesis() {
-        return myOperation == Operation.LEFT_PARENTHESIS;
-    }
-
+    /**
+     * Evaluates the expression (val1 on val2).
+     *
+     * @param val1 Value 1
+     * @param val2 Value 2
+     * @return Completed evaluation
+     */
     public int evaluate(int val1, int val2) {
         return switch (myOperation) {
             case ADDITION -> val1 + val2;
@@ -51,8 +74,14 @@ public class OperationElement implements Element {
         };
     }
 
+    @Override
+    public String toString() {
+        return "[OE: " + myOperation.character + "]";
+    }
+
     public enum Operation {
-        LEFT_PARENTHESIS(')', 2),
+        LEFT_PARENTHESIS('(', 2), // Redundant?
+        RIGHT_PARENTHESIS(')', 2),
         MULTIPLICATION('*', 1),
         DIVISION('/', 1),
         ADDITION('+', 0),

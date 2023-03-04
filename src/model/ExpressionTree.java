@@ -74,19 +74,19 @@ public class ExpressionTree {
         int index = 0;
 
         while (index < theExpression.length()) {
-            char c = theExpression.charAt(index);
 
             // eliminate whitespace
             while (index < theExpression.length()) {
-                if (Character.isWhitespace(theExpression.charAt(index))) break;
+                if (!Character.isWhitespace(theExpression.charAt(index))) break;
                 index++;
             }
 
-            if (index == theExpression.length()) throw new IndexOutOfBoundsException("Invalid formula passed for parsing");
+            if (index == theExpression.length()) break;
 
+            char c = theExpression.charAt(index);
 
             // ASSERT: ch now contains the first character of the next token.
-            if (OperationElement.OPERATORS.contains(c)) {
+            if (OperationElement.OPERATORS.contains(c) && c != ')') {
 
                 // push operatorTokens onto the output stack until
                 // we reach an operator on the operator stack that has
@@ -94,7 +94,7 @@ public class ExpressionTree {
                 OperationElement operator;
                 while (!operatorStack.isEmpty()) {
                     operator =  operatorStack.peek();
-                    if (operator.getPriority() >= OperationElement.getPriority(c) && !operator.isParenthesis()) {
+                    if (operator.getPriority() >= OperationElement.getPriority(c) && operator.getOperator() != '(') {
                         operatorStack.pop();
                         returnStack.push(operator);
                     } else break;
@@ -102,12 +102,12 @@ public class ExpressionTree {
                 operatorStack.push(new OperationElement(c));
                 index++;
 
-            } else if (c == '(') {
+            } else if (c == ')') {
                 OperationElement operator;
                 operator = operatorStack.pop();
 
                 // This code does not handle operatorStack underflow.
-                while (!operator.isParenthesis()) {
+                while (operator.getOperator() != '(') {
 
                     // pop operators off the stack until a LeftParen appears and
                     // place the operators on the output stack
@@ -122,11 +122,14 @@ public class ExpressionTree {
                 index++;
 
                 while (index < theExpression.length()) {
+                    c = theExpression.charAt(index);
                     if (Character.isDigit(c)) {
                         literal = (literal * 10) + (c - '0');
                         index++;
                     } else break;
                 }
+
+                System.out.println(literal);
 
                 // place the literal on the output stack
                 returnStack.push(new LiteralElement(literal));
@@ -139,6 +142,7 @@ public class ExpressionTree {
                 returnStack.push(cell);
 
             } else throw new IllegalArgumentException("Invalid characters contained in formula");
+
         }
 
         // pop all remaining operators off the operator stack
@@ -159,6 +163,7 @@ public class ExpressionTree {
     // calculates recursively
     private int calculate(Node node) {
         if (node == null) throw new IllegalArgumentException("The expression is invalid!");
+        System.out.println(node.element);
         if (node.element instanceof OperationElement) {
             return ((OperationElement) node.element).evaluate(calculate(node.left), calculate(node.right));
         } else {
