@@ -9,39 +9,56 @@ package model.element;
 public class OperationElement implements Element {
 
     /**
-     * The stored operation. (+, -, *, /)
+     * The stored operation. (+, -, *, /, ))
      */
-    private char myOperation;
+    private final Operation myOperation;
 
     /**
      * Constructor for the OperationElement.
      * @param theOperation the operation character we are processing and storing.
      */
     public OperationElement(final char theOperation){
-        setOperation(theOperation);
+        myOperation = Operation.fromChar(theOperation);
     }
 
-    /**
-     * Setter for the OperationElement. Used by constructor.
-     * @param theOperation Takes a character in, and if valid,
-     *                     sets myOperation to that character.
-     */
-    private void setOperation(final char theOperation) {
-        switch (theOperation) {
-            case '+':
-                myOperation = '+';
-                break;
-            case '-':
-                myOperation = '-';
-                break;
-            case '*':
-                myOperation = '*';
-                break;
-            case '/':
-                myOperation = '/';
-                break;
+    public char getOperator() {
+        return myOperation.character;
+    }
 
-            default:throw new IllegalArgumentException("Invalid character"); // temporary
+    public int getPriority() {
+        return myOperation.priority;
+    }
+
+    public static int getPriority(final char theOperation) {
+        return Operation.fromChar(theOperation).priority;
+    }
+
+    public boolean isParenthesis() {
+        return myOperation == Operation.LEFT_PARENTHESIS;
+    }
+
+    public enum Operation {
+        LEFT_PARENTHESIS(')', 2),
+        MULTIPLICATION('*', 1),
+        DIVISION('/', 1),
+        ADDITION('+', 0),
+        SUBTRACTION('-', 0);
+
+        final char character;
+        final int priority;
+
+        Operation(char character, int priority) {
+            this.character = character;
+            this.priority = priority;
         }
+
+        static Operation fromChar(final char character) {
+            for (final Operation op : Operation.values()) {
+                if (character == op.character) return op;
+            }
+            throw new IllegalArgumentException("Invalid character");
+        }
+
     }
+
 }

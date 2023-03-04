@@ -17,8 +17,8 @@ public class Cell {
      * Constructor for the cell object.
      * @param input the expression stored in the cell.
      */
-    public Cell (final String input) {
-        expression = new ExpressionTree(input);
+    public Cell(final String input, final SpreadSheet ss) {
+        expression = new ExpressionTree(input, ss);
         value = calculate(expression);
     }
 
