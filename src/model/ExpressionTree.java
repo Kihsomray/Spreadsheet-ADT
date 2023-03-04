@@ -70,7 +70,10 @@ public class ExpressionTree {
      * @param theExpression String formula to parse
      * @return Stack of postfix read for tree construction
      */
-    private Stack<Element> expressionPostfix(final String theExpression) {
+    private Stack<Element> expressionPostfix(String theExpression) {
+
+        // TODO is this okay to do??? (eg. 1 1 - 6 = 5)
+        theExpression = theExpression.replace(" ", "");
 
         Stack<OperationElement> operatorStack = new Stack<>();
         Stack<Element> returnStack = new Stack<>();
