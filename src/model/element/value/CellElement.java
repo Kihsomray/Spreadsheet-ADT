@@ -52,7 +52,7 @@ public class CellElement implements ValueElement {
 
     @Override
     public int getValue() {
-        return 0;
+        return ss.getCellAt(row, column).getCellValue();
     }
 
 }

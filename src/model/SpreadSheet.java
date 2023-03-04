@@ -22,13 +22,13 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
     public static final int NUM_LETTERS = 26;
 
 
-    private final Object [] columnNames;
+    private final Object[] columnNames;
 
     public SpreadSheet(final int theRows, final int theColumns) {
         mySpreadsheet = new Cell[theRows][theColumns];
         myColumns = theColumns;
         myRows = theColumns;
-        columnNames = new String[myColumns +1];
+        columnNames = new String[myColumns + 1];
 
         fillColumnNames();
         initializeSpreadsheet();
@@ -130,14 +130,6 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
     }
 
     /**
-     * Return the spreadsheet.
-     * @return the spreadsheet
-     */
-    public Cell[][] getSpreadsheet() {
-        return mySpreadsheet;
-    }
-
-    /**
      * Gets a cell's formula.
      * @param theRow The row of the cell.
      * @param theColumn The column of the cell.
@@ -170,6 +162,10 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
             }
         }
 
+    }
+
+    public Cell getCellAt(final int theRow, final int theColumn) {
+        return mySpreadsheet[theRow][theColumn];
     }
 
 }

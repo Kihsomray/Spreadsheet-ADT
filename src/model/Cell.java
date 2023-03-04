@@ -3,7 +3,7 @@ package model;
 import java.util.LinkedList;
 import java.util.Objects;
 
-class Cell {
+public class Cell {
 
     /**
      * The integer value of the cell.
