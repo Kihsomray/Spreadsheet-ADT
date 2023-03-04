@@ -32,6 +32,7 @@ public class Cell {
 
     /**
      * Constructor for the cell object.
+     *
      * @param theInput the expression stored in the cell.
      */
     Cell(final String theInput, final SpreadSheet theSpreadSheet) {
@@ -41,11 +42,12 @@ public class Cell {
 
     /**
      * Updates the cell with the new formula, if it's indeed a new formula.
+     *
      * @param theInput The String input from the table.
      */
     void refreshCell(final String theInput) {
         if (!Objects.equals(theInput, myFormulaInput)) {
-            myExpressionTree = new ExpressionTree(theInput, mySpreadSheet);
+            myExpressionTree = new ExpressionTree(theInput, this);
             myFormulaInput = theInput;
             updateCellValue();
         }
@@ -80,9 +82,29 @@ public class Cell {
 
     /**
      * Getter method for the original formula used for the Cell.
+     *
      * @return The original String input.
      */
     public String getFormula() {
         return myFormulaInput;
     }
+
+    /**
+     * Add a dependency to the current cell.
+     *
+     * @param theCell Cell to add
+     */
+    public void addDependency(final Cell theCell) {
+        myDependents.add(theCell);
+    }
+
+    /**
+     * Gets the cell's spreadsheet.
+     *
+     * @return cell's spreadsheet
+     */
+    SpreadSheet getSpreadSheet() {
+        return mySpreadSheet;
+    }
+
 }

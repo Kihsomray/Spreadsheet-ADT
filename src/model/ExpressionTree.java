@@ -18,37 +18,41 @@ import java.util.Stack;
 public class ExpressionTree {
 
     private final Node myHeaderNode;
-    private final SpreadSheet mySpreadSheet;
+    private final Cell myCell;
 
     /**
      * Generates an expression tree given a formula and spreadsheet.
      *
      * @param theExpression Expression to parse
-     * @param theSpreadSheet Spreadsheet of the cell
+     * @param theCell Parent cell of this tree
      */
-    public ExpressionTree(final String theExpression, final SpreadSheet theSpreadSheet) {
-        myHeaderNode = constructTree(expressionPostfix(theExpression));
-        mySpreadSheet = theSpreadSheet;
+    public ExpressionTree(final String theExpression, final Cell theCell) {
+        myHeaderNode = constructTree(expressionPostfix(theExpression), theCell);
+        myCell = theCell;
     }
 
     /**
      * Constructs a tree from a stack based post-fix expression.
      *
      * @param theStack Postfix expression stack
+     * @param theCell Cell that contains this tree
      * @return Converted tree from stack
      */
-    private Node constructTree(final Stack<Element> theStack) {
+    private Node constructTree(final Stack<Element> theStack, final Cell theCell) {
         if (theStack.isEmpty()) throw new IndexOutOfBoundsException("Expression cannot be empty");
 
         final Element element = theStack.pop();  // need to handle stack underflow
         if (element instanceof ValueElement) {
+            if (element instanceof CellElement) {
+                ((CellElement) element).getCell().addDependency(theCell);
+            }
             // Literals and Cells are leaves in the expression tree
             return new Node(element);
         } else {
             // Continue finding tokens that will form the
             // right subtree and left subtree.
-            Node rightSubtree = constructTree(theStack);
-            Node leftSubtree  = constructTree(theStack);
+            Node rightSubtree = constructTree(theStack, theCell);
+            Node leftSubtree  = constructTree(theStack, theCell);
             return new Node(element, leftSubtree, rightSubtree);
         }
     }
@@ -137,7 +141,7 @@ public class ExpressionTree {
             } else if (Character.isAlphabetic(c)) {
 
                 // We found a cell reference token
-                CellElement cell = new CellElement(mySpreadSheet);
+                CellElement cell = new CellElement(myCell.getSpreadSheet());
                 index = CellElement.applyValues(theExpression, index, cell);
                 returnStack.push(cell);
 
@@ -161,7 +165,7 @@ public class ExpressionTree {
     }
 
     // calculates recursively
-    private int calculate(Node node) {
+    private int calculate(final Node node) {
         if (node == null) throw new IllegalArgumentException("The expression is invalid!");
         System.out.println(node.element);
         if (node.element instanceof OperationElement) {

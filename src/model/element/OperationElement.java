@@ -14,7 +14,7 @@ public class OperationElement implements Element {
     /**
      * All operators in a set.
      */
-    public static final Set<Character> OPERATORS = Set.of('+', '-', '*', '/', '(', ')');
+    public static final Set<Character> OPERATORS = Set.of('+', '-', '*', '/', '%', '(', ')', '^');
 
     /**
      * The stored operation. (+, -, *, /, (, ))
@@ -58,7 +58,7 @@ public class OperationElement implements Element {
     }
 
     /**
-     * Evaluates the expression (val1 on val2).
+     * Evaluates the expression (val1 & val2).
      *
      * @param val1 Value 1
      * @param val2 Value 2
@@ -66,10 +66,12 @@ public class OperationElement implements Element {
      */
     public int evaluate(int val1, int val2) {
         return switch (myOperation) {
-            case ADDITION -> val1 + val2;
-            case SUBTRACTION -> val1 - val2;
-            case MULTIPLICATION -> val1 * val2;
-            case DIVISION -> val1 / val2;
+            case EXPONENT -> (int) Math.pow(val2, val1);
+            case ADDITION -> val2 + val1;
+            case SUBTRACTION -> val2 - val1;
+            case MULTIPLICATION -> val2 * val1;
+            case DIVISION -> val2 / val1;
+            case MODULUS -> val2 % val1;
             default -> throw new IllegalArgumentException("Invalid expression");
         };
     }
@@ -80,10 +82,12 @@ public class OperationElement implements Element {
     }
 
     public enum Operation {
+        EXPONENT('^', 3),
         LEFT_PARENTHESIS('(', 2), // Redundant?
         RIGHT_PARENTHESIS(')', 2),
         MULTIPLICATION('*', 1),
         DIVISION('/', 1),
+        MODULUS('%', 1),
         ADDITION('+', 0),
         SUBTRACTION('-', 0);
 

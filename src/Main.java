@@ -20,8 +20,8 @@ public class Main {
 
         // start of code
 
-        //ExpressionTree tree = new ExpressionTree("   ( 4 + 5 ) * 9   ", null);
-        //System.out.println(tree.calculate());
+        ExpressionTree tree = new ExpressionTree("   ( 5 ^ 2 ) * 9   ", null);
+        System.out.println(tree.calculate());
 
     }
 
