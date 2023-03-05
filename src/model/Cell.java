@@ -18,7 +18,7 @@ public class Cell {
     /**
      * A LinkedList of cells that depend on this one.
      */
-    private LinkedList<Cell> myDependents = new LinkedList<>();
+    private final LinkedList<Cell> myDependents = new LinkedList<>();
 
     /**
      * The original formula entered by the user as a String.
@@ -28,7 +28,7 @@ public class Cell {
     /**
      * Reference to the spreadsheet this cell is in.
      */
-    private SpreadSheet mySpreadSheet;
+    private final SpreadSheet mySpreadSheet;
 
     /**
      * Constructor for the cell object.
@@ -36,8 +36,10 @@ public class Cell {
      * @param theInput the expression stored in the cell.
      */
     Cell(final String theInput, final SpreadSheet theSpreadSheet) {
-        refreshCell(theInput);
+        myExpressionTree = new ExpressionTree(theInput, this);
+        myFormulaInput = theInput;
         mySpreadSheet = theSpreadSheet;
+        updateCellValue();
     }
 
     /**
@@ -45,7 +47,7 @@ public class Cell {
      *
      * @param theInput The String input from the table.
      */
-    void refreshCell(final String theInput) {
+    void refreshCell(final String theInput, final Cell theCell) {
         if (!Objects.equals(theInput, myFormulaInput)) {
             myExpressionTree = new ExpressionTree(theInput, this);
             myFormulaInput = theInput;
@@ -64,7 +66,7 @@ public class Cell {
     /**
      * Method to update the values of dependent cells.
      */
-    public void updateDependents(){
+    void updateDependents(){
         for (Cell c : myDependents) {
             c.updateCellValue();
         }
@@ -75,8 +77,8 @@ public class Cell {
      * Calls updateDependents to also update any necessary dependencies after this.
      */
     private void updateCellValue() {
-        myExpressionTree.calculate();
-        updateDependents(); //how prevent cycle
+        myCellValue = myExpressionTree.calculate();
+        updateDependents(); //TODO: confirm this actually works
     }
 
 
@@ -92,9 +94,9 @@ public class Cell {
     /**
      * Add a dependency to the current cell.
      *
-     * @param theCell Cell to add
+     * @param theCell The Cell that depends on this cell's value.
      */
-    public void addDependency(final Cell theCell) {
+    void addDependency(final Cell theCell) {
         myDependents.add(theCell);
     }
 
