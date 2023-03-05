@@ -1,4 +1,5 @@
 import model.ExpressionTree;
+import model.SpreadSheet;
 
 /**
  * Main class of the entire program.
@@ -18,10 +19,11 @@ public class Main {
      */
     public static void main(final String[] args) {
 
-        // start of code
-
-        ExpressionTree tree = new ExpressionTree("6-1 1 - 4      2      0                 - 6     9 ", null);
-        System.out.println(tree.calculate());
+        SpreadSheet test = new SpreadSheet(4, 4);
+        test.addCell("5 - 3", 0, 0);
+        test.printCellFormula(0,0);
+        test.addCell("1+A1", 2, 2);
+        System.out.println(test.getCellAt(2, 2).getCellValue());
 
     }
 

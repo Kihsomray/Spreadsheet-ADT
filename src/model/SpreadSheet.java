@@ -4,9 +4,6 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import java.util.LinkedList;
-import java.util.Objects;
-
 
 public class SpreadSheet extends DefaultTableModel implements TableModelListener {
 
@@ -24,10 +21,10 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
 
     private final Object[] columnNames;
 
-    public SpreadSheet(final int theRows, final int theColumns) {
-        mySpreadsheet = new Cell[theRows][theColumns];
+    public SpreadSheet(final int theColumns, final int theRows) {
+        mySpreadsheet = new Cell[theColumns][theRows];
         myColumns = theColumns;
-        myRows = theColumns;
+        myRows = theRows;
         columnNames = new String[myColumns + 1];
 
         fillColumnNames();
@@ -40,8 +37,6 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
                 return true;
             }
         };
-
-        setupAllCells();
     }
 
     /**
@@ -57,9 +52,6 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
         int column = theEvent.getColumn();
         Cell cell = mySpreadsheet[row][column];
 
-        // Get the new formula from the cell and try to parse it.
-        // TODO: take input string and attempt to update cell
-        // cell.refreshCell(newformula); // something like this
         boolean displayFormulas = false;
 
     }
@@ -104,29 +96,15 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
      */
     public void initializeSpreadsheet() {
         mySpreadsheet = new Cell[myRows][myColumns];
-        for (int row = 0; row < myRows; row++) {
-            for (int col = 0; col < myColumns; col++) {
-                mySpreadsheet[row][col] = new Cell(convertColumn(col) + (row + 1), this);
-            }
-        }
 
     }
 
-    /**
-     * Sets up all the cells with the correct formulas and values.
-     */
-    private void setupAllCells() {
-        for (int row = 0; row < myRows; row++) {
-            for (int col = 0; col < myColumns; col++) {
-                Cell cell = mySpreadsheet[row][col];
-//                String formula = (String) myTable.getValueAt(row, col);
-//                cell.refreshCell(formula); // buggy at the moment, but this is the same issue as the above todo
-            }
+    public void addCell(final String theInput, final int theColumn, final int theRow) {
+        if (mySpreadsheet[theColumn][theRow] == null) {
+            mySpreadsheet[theColumn][theRow] = new Cell(theInput, this);
+        } else {
+            mySpreadsheet[theColumn][theRow].refreshCell(theInput, mySpreadsheet[theColumn][theRow]);
         }
-    }
-
-    public void addCell(final String theInput, final int theRow, final int theColumn) {
-        mySpreadsheet[theRow][theColumn].refreshCell(theInput);
     }
 
     /**

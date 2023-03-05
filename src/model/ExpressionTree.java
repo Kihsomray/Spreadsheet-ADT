@@ -27,8 +27,8 @@ public class ExpressionTree {
      * @param theCell Parent cell of this tree
      */
     public ExpressionTree(final String theExpression, final Cell theCell) {
-        myHeaderNode = constructTree(expressionPostfix(theExpression), theCell);
         myCell = theCell;
+        myHeaderNode = constructTree(expressionPostfix(theExpression), theCell);
     }
 
     /**
@@ -44,7 +44,10 @@ public class ExpressionTree {
         final Element element = theStack.pop();  // need to handle stack underflow
         if (element instanceof ValueElement) {
             if (element instanceof CellElement) {
-                ((CellElement) element).getCell().addDependency(theCell);
+                // Needed a reference to sheet for the CellElement, can use the passed Cell as it's the same sheet
+                CellElement currentElement = new CellElement(theCell.getSpreadSheet());
+//                currentElement.getCell().addDependency(theCell);
+//                TODO: need accurate reference to the CellElement address here
             }
             // Literals and Cells are leaves in the expression tree
             return new Node(element);
@@ -148,7 +151,8 @@ public class ExpressionTree {
                 index = CellElement.applyValues(theExpression, index, cell);
                 returnStack.push(cell);
 
-            } else throw new IllegalArgumentException("Invalid characters contained in formula");
+            } else throw new IllegalArgumentException("Invalid characters contained in formula, " +
+                    "the formula passed was:" + theExpression);
 
         }
 
@@ -174,7 +178,13 @@ public class ExpressionTree {
         if (node.element instanceof OperationElement) {
             return ((OperationElement) node.element).evaluate(calculate(node.left), calculate(node.right));
         } else {
-            return ((ValueElement) node.element).getValue();
+            if (node.element instanceof CellElement) {
+                CellElement currentElement = new CellElement(myCell.getSpreadSheet());
+                return currentElement.getValue();
+            }
+            else {
+                return ((ValueElement) node.element).getValue();
+            }
         }
     }
 

@@ -9,10 +9,11 @@ public class CellElement implements ValueElement {
     private int row;
     private int column;
 
-    private final SpreadSheet ss;
+    private final SpreadSheet mySpreadSheet;
 
-    public CellElement(final SpreadSheet ss) {
-        this.ss = ss;
+
+    public CellElement(final SpreadSheet theSpreadSheet) {
+        mySpreadSheet = theSpreadSheet;
     }
 
     public static int applyValues(final String formula, int index, final CellElement element) {
@@ -50,7 +51,7 @@ public class CellElement implements ValueElement {
     }
 
     public Cell getCell() {
-        return ss.getCellAt(row, column);
+        return mySpreadSheet.getCellAt(row, column);
     }
 
     @Override
