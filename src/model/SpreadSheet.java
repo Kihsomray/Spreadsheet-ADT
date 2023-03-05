@@ -183,7 +183,7 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
         try {
             FileOutputStream outFile = new FileOutputStream(theFileName);
             ObjectOutputStream outObject = new ObjectOutputStream(outFile);
-            outObject.writeObject(this);
+            outObject.writeObject(mySpreadsheet);
             outObject.close();
             outFile.close();
             System.out.println("Spreadsheet saved to file " + theFileName);
@@ -197,12 +197,11 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
      * Loads a previously saved instance of a spreadsheet. (WIP)
      * @param theFileName The file to load the spreadsheet from.
      */
-    public static SpreadSheet loadSpreadSheet(String theFileName){
-        SpreadSheet loadedSheet;
+    public void loadSpreadSheet(String theFileName){
         try {
             FileInputStream inFile = new FileInputStream(theFileName);
             ObjectInputStream inObject = new ObjectInputStream(inFile);
-            loadedSheet = (SpreadSheet) inObject.readObject();
+            mySpreadsheet = (Cell[][]) inObject.readObject();
             inObject.close();
             inFile.close();
             System.out.println("Spreadsheet loaded from " + theFileName);
@@ -210,8 +209,6 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-
-        return loadedSheet;
     }
 
 }
