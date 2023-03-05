@@ -181,12 +181,12 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
      */
     public void saveSpreadSheet(String theFileName){
         try {
-            FileOutputStream outFile = new FileOutputStream(theFileName + ".ser");
+            FileOutputStream outFile = new FileOutputStream(theFileName);
             ObjectOutputStream outObject = new ObjectOutputStream(outFile);
-            outObject.writeObject(mySpreadsheet);
+            outObject.writeObject(this);
             outObject.close();
             outFile.close();
-            System.out.println("Spreadsheet saved to file " + outFile);
+            System.out.println("Spreadsheet saved to file " + theFileName);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -197,19 +197,21 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
      * Loads a previously saved instance of a spreadsheet. (WIP)
      * @param theFileName The file to load the spreadsheet from.
      */
-    public void loadSpreadSheet(String theFileName){
+    public static SpreadSheet loadSpreadSheet(String theFileName){
+        SpreadSheet loadedSheet;
         try {
-            FileInputStream inFile = new FileInputStream(theFileName + ".ser");
+            FileInputStream inFile = new FileInputStream(theFileName);
             ObjectInputStream inObject = new ObjectInputStream(inFile);
-            mySpreadsheet = (Cell[][]) inObject.readObject();
+            loadedSheet = (SpreadSheet) inObject.readObject();
             inObject.close();
             inFile.close();
-            System.out.println("Spreadsheet loaded from file " + theFileName + ".ser");
+            System.out.println("Spreadsheet loaded from " + theFileName);
 
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 
+        return loadedSheet;
     }
 
 }
