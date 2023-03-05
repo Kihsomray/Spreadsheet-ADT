@@ -13,11 +13,18 @@ import java.util.Stack;
  * expressions with easy recalculation.
  *
  * @author Michael N Yarmoshik
- * @version 1.0.0
+ * @version 3/4/2023
  */
 public class ExpressionTree {
 
+    /**
+     * The header node of the Tree.
+     */
     private final Node myHeaderNode;
+
+    /**
+     * The parent Cell the Tree is contained in.
+     */
     private final Cell myCell;
 
     /**
@@ -188,16 +195,39 @@ public class ExpressionTree {
         }
     }
 
-    // Helper class for Expression Tree
+    /**
+     * Helper Node class for the ExpressionTree.
+     */
     private class Node {
+        /**
+         * The element in the Node.
+         */
         Element element;
+
+        /**
+         * The right child of the Node.
+         */
         Node right;
+
+        /**
+         * The left child of the Node.
+         */
         Node left;
 
+        /**
+         * Constructor for the Node.
+         * @param theElement The element within the Node.
+         */
         public Node(final Element theElement) {
             element = theElement;
         }
 
+        /**
+         * A constructor for the Node when there are child Nodes.
+         * @param theElement The element within the Node.
+         * @param theRight The right child.
+         * @param theLeft The left child.
+         */
         public Node(final Element theElement, final Node theRight, final Node theLeft) {
             element = theElement;
             right = theRight;

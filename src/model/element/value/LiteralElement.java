@@ -41,6 +41,10 @@ public class LiteralElement implements ValueElement {
         myLiteralValue = theValue;
     }
 
+    /**
+     * A toString method for a readable representation of what LiteralElement contains.
+     * @return A readable String of LiteralElement.
+     */
     @Override
     public String toString() {
         return "[LE: " + myLiteralValue + "]";

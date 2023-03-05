@@ -3,6 +3,15 @@ package model;
 import java.util.LinkedList;
 import java.util.Objects;
 
+/**
+ * A Cell class that contains a formula, an ExpressionTree that defines the Cell's value,
+ * and an integer that is the calculated value of that ExpressionTree.
+ * Contains a LinkedList of other Cells that depend on this one.
+ *
+ * @author Max Yim
+ * @author Matt Bauchspies mbauch72@uw.edu
+ * @version 3/5/2023
+ */
 public class Cell {
 
     /**
