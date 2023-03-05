@@ -143,10 +143,10 @@ public class ExpressionTree {
 
             } else if (Character.isAlphabetic(c)) {
 
-                // We found a cell reference token
-                CellElement cell = new CellElement(myCell.getSpreadSheet());
-                index = CellElement.applyValues(theExpression, index, cell);
-                returnStack.push(cell);
+                    // We found a cell reference token
+                    CellElement cell = new CellElement(myCell.getSpreadSheet());
+                    index = CellElement.applyValues(theExpression, index, cell);
+                    returnStack.push(cell);
 
             } else throw new IllegalArgumentException("Invalid characters contained in formula");
 
