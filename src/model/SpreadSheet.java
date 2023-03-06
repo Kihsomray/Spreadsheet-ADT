@@ -67,7 +67,7 @@ public class SpreadSheet {
     public void addCell(final String theInput, final int theColumn, final int theRow) {
         checkBounds(theColumn, theRow);
         if (myCells[theColumn][theRow] == null) {
-            myCells[theColumn][theRow] = new Cell(theInput, this);
+            myCells[theColumn][theRow] = new Cell(theInput, this).initialize();
         } else {
             myCells[theColumn][theRow].refreshCell(theInput, myCells[theColumn][theRow]);
         }

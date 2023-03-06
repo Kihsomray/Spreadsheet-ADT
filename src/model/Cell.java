@@ -45,10 +45,19 @@ public class Cell {
      * @param theInput the expression stored in the cell.
      */
     Cell(final String theInput, final SpreadSheet theSpreadSheet) {
-        myExpressionTree = new ExpressionTree(theInput, this);
         myFormulaInput = theInput;
         mySpreadSheet = theSpreadSheet;
+    }
+
+    /**
+     * Initializes the cell object
+     *
+     * @return reference to current cell
+     */
+    public Cell initialize() {
+        myExpressionTree = new ExpressionTree(myFormulaInput, this);
         updateCellValue();
+        return this;
     }
 
     /**

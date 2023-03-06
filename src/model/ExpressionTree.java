@@ -50,11 +50,9 @@ public class ExpressionTree {
 
         final Element element = theStack.pop();  // need to handle stack underflow
         if (element instanceof ValueElement) {
-            if (element instanceof CellElement) {
-                // Needed a reference to sheet for the CellElement, can use the passed Cell as it's the same sheet
-                CellElement currentElement = new CellElement(theCell.getSpreadSheet());
-//                currentElement.getCell().addDependency(theCell);
-//                TODO: need accurate reference to the CellElement address here
+            if (element instanceof CellElement cellElement) {
+                System.out.println(cellElement);
+                cellElement.getCell().addDependency(theCell);
             }
             // Literals and Cells are leaves in the expression tree
             return new Node(element);
@@ -146,8 +144,6 @@ public class ExpressionTree {
                     } else break;
                 }
 
-//                System.out.println(literal);
-
                 // place the literal on the output stack
                 returnStack.push(new LiteralElement(literal));
 
@@ -181,7 +177,6 @@ public class ExpressionTree {
     // calculates recursively
     private int calculate(final Node node) {
         if (node == null) throw new IllegalArgumentException("The expression is invalid!");
-//        System.out.println(node.element);
         if (node.element instanceof OperationElement) {
             return ((OperationElement) node.element).evaluate(calculate(node.left), calculate(node.right));
         } else {
@@ -199,6 +194,7 @@ public class ExpressionTree {
      * Helper Node class for the ExpressionTree.
      */
     private class Node {
+
         /**
          * The element in the Node.
          */
