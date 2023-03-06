@@ -146,7 +146,7 @@ public class ExpressionTree {
                     } else break;
                 }
 
-                System.out.println(literal);
+//                System.out.println(literal);
 
                 // place the literal on the output stack
                 returnStack.push(new LiteralElement(literal));
@@ -181,7 +181,7 @@ public class ExpressionTree {
     // calculates recursively
     private int calculate(final Node node) {
         if (node == null) throw new IllegalArgumentException("The expression is invalid!");
-        System.out.println(node.element);
+//        System.out.println(node.element);
         if (node.element instanceof OperationElement) {
             return ((OperationElement) node.element).evaluate(calculate(node.left), calculate(node.right));
         } else {

@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A class that defines the SpreadSheet operations.
@@ -15,17 +17,13 @@ import javax.swing.table.DefaultTableModel;
  *
  * @version 3/5/2023
  */
-public class SpreadSheet extends DefaultTableModel implements TableModelListener {
+public class SpreadSheet {
 
     /**
      * The underlying 2D Array of the SpreadSheet, contains Cells.
      */
-    private Cell[][] mySpreadsheet;
+    private Cell[][] myCells;
 
-    /**
-     * The JTable used for the GUI of the SpreadSheet.
-     */
-    private JTable myTable;
 
     /**
      * The total columns of the SpreadSheet.
@@ -42,10 +40,7 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
      */
     public static final int NUM_LETTERS = 26;
 
-    /**
-     * An Array of Strings for the column names.
-     */
-    private final String[] columnNames;
+    private String myCurrentInput; // most recent input into GUI
 
     /**
      * The constructor for the SpreadSheet.
@@ -53,83 +48,12 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
      * @param theRows The initial Rows in the SpreadSheet.
      */
     public SpreadSheet(final int theColumns, final int theRows) {
-        mySpreadsheet = new Cell[theColumns][theRows];
+        if (theColumns <= 0 || theRows <= 0) {
+            throw new IllegalArgumentException("SpreadSheet dimensions must be positive.");
+        }
+        myCells = new Cell[theColumns][theRows];
         myColumns = theColumns;
         myRows = theRows;
-        columnNames = new String[myColumns + 1];
-
-        fillColumnNames();
-        initializeSpreadsheet();
-        myTable = new JTable(mySpreadsheet, columnNames){
-            /** A generated serial version UID. */
-            private static final long serialVersionUID = -8427343693180623327L;
-            @Override
-            public boolean isCellEditable(int row, int columns){
-                return true;
-            }
-        };
-    }
-
-    /**
-     * This fine grain notification tells listeners the exact range
-     * of cells, rows, or columns that changed.
-     *
-     * @param theEvent a {@code TableModelEvent} to notify listener that a table model
-     *          has changed
-     */
-    @Override
-    public void tableChanged(TableModelEvent theEvent) {
-        int row = theEvent.getFirstRow();
-        int column = theEvent.getColumn();
-        Cell cell = mySpreadsheet[column][row];
-
-        boolean displayFormulas = false;
-
-    }
-
-    /**
-     * Getter for the JTable.
-     * @return The SpreadSheet's JTable.
-     */
-    public JTable getTable() {
-        return myTable;
-    }
-
-
-    /**
-     * Fills in the names of the columns.
-     */
-    private void fillColumnNames() {
-        columnNames[0] = "";
-        for (int i = 0; i < myColumns; i++) {
-            columnNames[i + 1] = convertColumn(i);
-        }
-    }
-
-    /**
-     * Converts the given column index to the corresponding column name.
-     *
-     * @param theColumn the index of the column
-     * @return the corresponding column name
-     */
-    private String convertColumn(final int theColumn) {
-        final StringBuilder result = new StringBuilder();
-        int column = theColumn;
-
-        do {
-            column--;
-            result.insert(0, (char) ('A' + column % NUM_LETTERS));
-            column /= NUM_LETTERS;
-        }
-        while (column > 0);
-        return result.toString();
-    }
-
-    /**
-     * Initialize the spreadsheet array.
-     */
-    public void initializeSpreadsheet() {
-        mySpreadsheet = new Cell[myColumns][myRows];
     }
 
     /**
@@ -141,10 +65,11 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
      * @param theRow The Row we want to add the Cell at.
      */
     public void addCell(final String theInput, final int theColumn, final int theRow) {
-        if (mySpreadsheet[theColumn][theRow] == null) {
-            mySpreadsheet[theColumn][theRow] = new Cell(theInput, this);
+        checkBounds(theColumn, theRow);
+        if (myCells[theColumn][theRow] == null) {
+            myCells[theColumn][theRow] = new Cell(theInput, this);
         } else {
-            mySpreadsheet[theColumn][theRow].refreshCell(theInput, mySpreadsheet[theColumn][theRow]);
+            myCells[theColumn][theRow].refreshCell(theInput, myCells[theColumn][theRow]);
         }
     }
 
@@ -154,7 +79,7 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
      * @param theColumn The column of the cell.
      */
     private String getCellFormula(final int theColumn, final int theRow) {
-        return mySpreadsheet[theColumn][theRow].getFormula();
+        return myCells[theColumn][theRow].getFormula();
     }
 
     /**
@@ -167,22 +92,22 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
     }
 
 
-    /**
-     * Prints the formulas of all cells.
-     */
-    //TODO confirm this works
-    public void printAllFormulas() {
-
-        for (int row = 0; row < myRows; row++) {
-            for (int col = 1; col < myColumns; col++) {
-                // Prints the Column and Row with colon (e.g. A4: )
-                System.out.print(convertColumn(col - 1) + row + ": ");
-                // Prints the formula for that cell
-                System.out.print(mySpreadsheet[row][col].getFormula() + "   ");
-            }
-        }
-
-    }
+//    /**
+//     * Prints the formulas of all cells.
+//     */
+//    //TODO confirm this works
+//    public void printAllFormulas() {
+//
+//        for (int row = 0; row < myRows; row++) {
+//            for (int col = 1; col < myColumns; col++) {
+//                // Prints the Column and Row with colon (e.g. A4: )
+//                System.out.print(convertColumn(col - 1) + row + ": ");
+//                // Prints the formula for that cell
+//                System.out.print(myCells[row][col].getFormula() + "   ");
+//            }
+//        }
+//
+//    }
 
     /**
      * Getter for a cell at a particular location of the SpreadSheet.
@@ -191,7 +116,35 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
      * @return The Cell contained at SpreadSheet[theColumn][theRow]
      */
     public Cell getCellAt(final int theColumn, final int theRow) {
-        return mySpreadsheet[theColumn][theRow];
+        checkBounds(theColumn, theRow);
+        // TODO null check
+        return myCells[theColumn][theRow];
+    }
+
+
+    private void checkBounds(final int theCol, final int theRow) {
+        if (theRow < 0 || theCol >= myColumns || theCol < 0 || theRow >= myRows) {
+            throw new IllegalArgumentException("Invalid cell index.");
+        }
+    }
+
+//
+//    public List<Cell> getCells() {
+//        final List<Cell> cells = new ArrayList<>();
+//        for (int i = 0; i < myNumRows; i++) {
+//            for (int j = 0; j < myNumCols; j++) {
+//                cells.add(myCells[i][j]);
+//            }
+//        }
+//        return cells;
+//    }
+
+    public int getMyColumns() {
+        return myColumns;
+    }
+
+    public int getMyRows() {
+        return myRows;
     }
 
 }
