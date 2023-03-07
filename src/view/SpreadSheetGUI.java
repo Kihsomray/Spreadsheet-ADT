@@ -196,7 +196,10 @@ public class SpreadSheetGUI {
             } else if (i == 1) {
                 columnModel.getColumn(i).setHeaderValue("A");
             } else {
-                columnModel.getColumn(i).setHeaderValue(Character.toString((char) ('A'+ i - 1)));
+                String[] columnNames = new String[mySpreadSheet.getMyColumns()];
+                for (int j = 0; j < mySpreadSheet.getMyColumns(); j++) {
+                    columnNames[j] = Character.toString((char) (j + 65));
+                }
             }
         }
         myTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
