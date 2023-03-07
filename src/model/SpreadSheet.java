@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,6 +140,50 @@ public class SpreadSheet {
 //        }
 //        return cells;
 //    }
+
+    /**
+     * Saves the contents of the sheets into a text file.
+     *
+     * @param theFileName name of the file.
+     */
+    public void saveSheet(String theFileName) {
+        StringBuilder result = new StringBuilder(myColumns + ", " + myRows + ", ");
+
+        for (int col = 0; col < myColumns; col++) {
+            for (int row = 0; row < myRows; row++) {
+                if (myCells[col][row] != null) {
+                    result.append(getColumnLabel(col) +"{" + row + "{" + getCellFormula(col,row) + "}, ");
+                } //append cells to result
+            }
+        }
+
+        try {
+            FileWriter writer = new FileWriter(theFileName);
+            writer.write(result.toString()); //write result to text file.
+            writer.close();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Loads a spreadsheet.
+     *
+     * @param theFileName the text file that holds the data for the spreadsheet.
+     */
+    public void loadSheet(String theFileName) {
+
+    }
+    public String getColumnLabel(int column) {
+        StringBuilder sb = new StringBuilder();
+        while (column >= 0) {
+            int remainder = column % 26;
+            sb.append((char) ('A' + remainder));
+            column = (column / 26) - 1;
+        }
+        return sb.reverse().toString();
+    }
 
     public int getMyColumns() {
         return myColumns;
