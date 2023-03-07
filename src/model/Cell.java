@@ -3,6 +3,15 @@ package model;
 import java.util.LinkedList;
 import java.util.Objects;
 
+/**
+ * A Cell class that contains a formula, an ExpressionTree that defines the Cell's value,
+ * and an integer that is the calculated value of that ExpressionTree.
+ * Contains a LinkedList of other Cells that depend on this one.
+ *
+ * @author Max Yim
+ * @author Matt Bauchspies mbauch72@uw.edu
+ * @version 3/5/2023
+ */
 public class Cell {
 
     /**
@@ -18,7 +27,7 @@ public class Cell {
     /**
      * A LinkedList of cells that depend on this one.
      */
-    private LinkedList<Cell> myDependents = new LinkedList<>();
+    private final LinkedList<Cell> myDependents = new LinkedList<>();
 
     /**
      * The original formula entered by the user as a String.
@@ -28,7 +37,7 @@ public class Cell {
     /**
      * Reference to the spreadsheet this cell is in.
      */
-    private SpreadSheet mySpreadSheet;
+    private final SpreadSheet mySpreadSheet;
 
     /**
      * Constructor for the cell object.
@@ -36,8 +45,19 @@ public class Cell {
      * @param theInput the expression stored in the cell.
      */
     Cell(final String theInput, final SpreadSheet theSpreadSheet) {
-        refreshCell(theInput);
+        myFormulaInput = theInput;
         mySpreadSheet = theSpreadSheet;
+    }
+
+    /**
+     * Initializes the cell object
+     *
+     * @return reference to current cell
+     */
+    public Cell initialize() {
+        myExpressionTree = new ExpressionTree(myFormulaInput, this);
+        updateCellValue();
+        return this;
     }
 
     /**
@@ -45,7 +65,7 @@ public class Cell {
      *
      * @param theInput The String input from the table.
      */
-    void refreshCell(final String theInput) {
+    void refreshCell(final String theInput, final Cell theCell) {
         if (!Objects.equals(theInput, myFormulaInput)) {
             myExpressionTree = new ExpressionTree(theInput, this);
             myFormulaInput = theInput;
@@ -64,10 +84,34 @@ public class Cell {
     /**
      * Method to update the values of dependent cells.
      */
-    public void updateDependents(){
+    void updateDependents(){
         for (Cell c : myDependents) {
             c.updateCellValue();
         }
+    }
+
+    public boolean checkCycle(){
+        for (Cell c : myDependents) {
+            if (c.checkCycle(this)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkCycle(final Cell theCell) {
+        if (myDependents.isEmpty()) {
+            return false;
+        }
+        if (theCell == this) {
+            return true;
+        }
+        for (Cell c : myDependents) {
+            if (c.checkCycle(theCell)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -75,8 +119,7 @@ public class Cell {
      * Calls updateDependents to also update any necessary dependencies after this.
      */
     private void updateCellValue() {
-        myExpressionTree.calculate();
-        updateDependents(); //how prevent cycle
+        myCellValue = myExpressionTree.calculate();
     }
 
 
@@ -92,9 +135,9 @@ public class Cell {
     /**
      * Add a dependency to the current cell.
      *
-     * @param theCell Cell to add
+     * @param theCell The Cell that depends on this cell's value.
      */
-    public void addDependency(final Cell theCell) {
+    void addDependency(final Cell theCell) {
         myDependents.add(theCell);
     }
 

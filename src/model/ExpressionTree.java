@@ -6,6 +6,7 @@ import model.element.value.CellElement;
 import model.element.value.LiteralElement;
 import model.element.value.ValueElement;
 
+import java.util.Iterator;
 import java.util.Stack;
 
 /**
@@ -13,11 +14,18 @@ import java.util.Stack;
  * expressions with easy recalculation.
  *
  * @author Michael N Yarmoshik
- * @version 1.0.0
+ * @version 3/4/2023
  */
 public class ExpressionTree {
 
+    /**
+     * The header node of the Tree.
+     */
     private final Node myHeaderNode;
+
+    /**
+     * The parent Cell the Tree is contained in.
+     */
     private final Cell myCell;
 
     /**
@@ -27,8 +35,11 @@ public class ExpressionTree {
      * @param theCell Parent cell of this tree
      */
     public ExpressionTree(final String theExpression, final Cell theCell) {
-        myHeaderNode = constructTree(expressionPostfix(theExpression), theCell);
         myCell = theCell;
+        myHeaderNode = constructTree(expressionPostfix(theExpression), theCell);
+        if (myCell.checkCycle()) {
+            throw new IllegalArgumentException("This is a cycle");
+        }
     }
 
     /**
@@ -43,8 +54,9 @@ public class ExpressionTree {
 
         final Element element = theStack.pop();  // need to handle stack underflow
         if (element instanceof ValueElement) {
-            if (element instanceof CellElement) {
-                ((CellElement) element).getCell().addDependency(theCell);
+            if (element instanceof CellElement cellElement) {
+                System.out.println(cellElement);
+                cellElement.getCell().addDependency(theCell);
             }
             // Literals and Cells are leaves in the expression tree
             return new Node(element);
@@ -136,8 +148,6 @@ public class ExpressionTree {
                     } else break;
                 }
 
-                System.out.println(literal);
-
                 // place the literal on the output stack
                 returnStack.push(new LiteralElement(literal));
 
@@ -148,7 +158,8 @@ public class ExpressionTree {
                     index = CellElement.applyValues(theExpression, index, cell);
                     returnStack.push(cell);
 
-            } else throw new IllegalArgumentException("Invalid characters contained in formula");
+            } else throw new IllegalArgumentException("Invalid characters contained in formula, " +
+                    "the formula passed was:" + theExpression);
 
         }
 
@@ -170,24 +181,48 @@ public class ExpressionTree {
     // calculates recursively
     private int calculate(final Node node) {
         if (node == null) throw new IllegalArgumentException("The expression is invalid!");
-        System.out.println(node.element);
-        if (node.element instanceof OperationElement) {
-            return ((OperationElement) node.element).evaluate(calculate(node.left), calculate(node.right));
+
+        if (node.element instanceof OperationElement operationElement) {
+            return operationElement.evaluate(calculate(node.left), calculate(node.right));
         } else {
             return ((ValueElement) node.element).getValue();
         }
     }
 
-    // Helper class for Expression Tree
+    /**
+     * Helper Node class for the ExpressionTree.
+     */
     private class Node {
+
+        /**
+         * The element in the Node.
+         */
         Element element;
+
+        /**
+         * The right child of the Node.
+         */
         Node right;
+
+        /**
+         * The left child of the Node.
+         */
         Node left;
 
+        /**
+         * Constructor for the Node.
+         * @param theElement The element within the Node.
+         */
         public Node(final Element theElement) {
             element = theElement;
         }
 
+        /**
+         * A constructor for the Node when there are child Nodes.
+         * @param theElement The element within the Node.
+         * @param theRight The right child.
+         * @param theLeft The left child.
+         */
         public Node(final Element theElement, final Node theRight, final Node theLeft) {
             element = theElement;
             right = theRight;

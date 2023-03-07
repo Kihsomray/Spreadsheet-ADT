@@ -1,167 +1,200 @@
 package model;
 
-import javax.swing.*;
-import java.awt.*;
-import java.text.NumberFormat;
+import model.SpreadSheet;
 
-/**
- * The GUI class represents the graphical user interface for a spreadsheet application.
- * It allows the user to interact with a spreadsheet object by setting the number of rows and columns
- * and adjusting the window size based on the dimensions of the spreadsheet.
- * The class initializes the JFrame, JMenuBar, JToolBar, WindowMenu, and Spreadsheet objects and
- * handles their resizing based on the user input.
- */
+import java.awt.GridLayout;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+
 
 public class SpreadSheetGUI {
 
-    private JFrame mySpreadSheetFrame;
+    public SpreadSheet mySpreadSheet;
 
-    /** The minimum number of rows and columns allowed. */
-    private static final int MIN_DIMENSION = 3;
+    public JTable myTable;
 
+    public JFrame myFrame;
 
-    /** Horizontal offset for initial frame resizing. */
-    private static final int WIDTH_OFFSET = 49;
+    //  private final Timer myTimer;
+    private boolean changeInProgress = false;
 
-    /** Vertical offset for initial frame resizing. */
-    private static final int HEIGHT_OFFSET = 127;
+    /** The width of the column of row numbers in pixels. */
+    public static final int WIDTH = 30;
 
-    /** The width of a cell in pixels. Default = 75 */
-    private static final int CELL_WIDTH = 75;
+    //	private JLabel myRowHeader;
+    //
+    //	private JLabel myColumnHeader;
 
-    /** The height of a cell in pixels. Default = 16 */
-    private static final int CELL_HEIGHT = 16;
-
-    /** The JMenuBar will display the Menu.*/
-    private final JMenuBar  myMenuBar;
-
-//    /** JToolBar to display used tools*/
-//    private final JToolBar myToolBar;
-
-    /** JPanel for the dialog */
-    JPanel mainPanel = new JPanel();
-
-    /** JPanel to Hold the text fields for the row and column inputs*/
-    JPanel inputPanel = new JPanel();
-
-    /** The SpreadSheet that contains all the data.*/
-    private SpreadSheet mySpreadsheet;
-
-    /** number of rows in the SpreadSheet*/
-    private int rows;
-
-    /** number of columns in the SpreadSheet.*/
-    private int cols;
-
-    /**
-     * Initializes the GUI object by creating a JFrame, JMenuBar, JToolBar, WindowMenu, and Spreadsheet object.
-     * It prompts the user to input the desired number of rows and columns, adjusts the initial and minimum
-     * component size based on the user input, and fills the GUI with its contents.
-     */
     public SpreadSheetGUI() {
-        /* Creating the frame for the spreadSheet */
-        mySpreadSheetFrame = new JFrame("model.SpreadSheet");
-
-        /** user input of desired rows and columns*/
-        final Dimension dimension = initialize();
-
-        /** creates a new spreadsheet with the desired input*/
-        mySpreadsheet = new SpreadSheet((int)dimension.getWidth(), (int) dimension.getHeight());
-
-        /** resizing the components in the GUI*/
-        resizeComponents();
-        myMenuBar = null;
+        promptUserForDimensions();
+        initializeSpreadSheet();
+        createTable();
+        createFrame();
     }
 
     /**
-     * This method adjusts the initial and minimum component size based on the
-     * number of rows and columns.
+     * Prompts the user for the number of rows and columns to create.
      */
-    private void resizeComponents() {
-        /** Calculating the width and height of all components based on the table dimensions*/
-        int minWidth = (WIDTH_OFFSET + CELL_WIDTH * cols);
-        int minHeight = (HEIGHT_OFFSET + CELL_HEIGHT * rows);
+    private void promptUserForDimensions() {
+        JTextField rowsField = new JTextField(5);
+        JTextField columnsField = new JTextField(5);
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        final double width = screenSize.getWidth();
-        final double height = screenSize.getHeight();
-        mySpreadSheetFrame.setSize((int) Math.min(minWidth, width), (int) Math.min(minHeight, height));
-    }
+        JPanel panel = new JPanel(new GridLayout(0, 1));
+        panel.add(new JLabel("Enter the number of rows:"));
+        panel.add(rowsField);
+        panel.add(new JLabel("Enter the number of columns:"));
+        panel.add(columnsField);
 
-    /** user-prompt to enter required SpreadSheet Size.
-     * @return the size of the SpreadSheet
-     * */
-    private Dimension initialize() {
-        /** text fields*/
-        final Dimension size = new Dimension();
+        int result = JOptionPane.showConfirmDialog(null, panel, "Enter spreadsheet dimensions",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-        /** Create a number format for the row and column size fields*/
-        NumberFormat numberFormat = NumberFormat.getIntegerInstance();
-
-        /** Create the Formatted text field with the number format and sets the intial value of 0*/
-        JFormattedTextField rowSize = new JFormattedTextField(numberFormat);
-        //rowSize.setValue(0);
-        JFormattedTextField columnSize = new JFormattedTextField(numberFormat);
-        //columnSize.setValue(0);
-
-        /**Set teh preferred size of the text fields*/
-        Dimension fieldSize = new Dimension(60, 25);
-        rowSize.setPreferredSize(fieldSize);
-        columnSize.setPreferredSize(fieldSize);
-
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.add(new JPanel().add(new JLabel("Sizes must be at least 3 rows x 3 columns.")));
-
-        inputPanel.add(new JLabel("Rows:"));
-        inputPanel.add(rowSize);
-        /** Box.createVerticalStrut(int height),creates a fixed-height invisible component, which can be used to
-         * add vertical spacing between components in a container.
-         */
-        inputPanel.add(Box.createVerticalStrut(15));
-        inputPanel.add(new JLabel("Column:"));
-        inputPanel.add(columnSize);
-        mainPanel.add(inputPanel);
-
-        /** JoptionPane user prompt*/
-
-        try{
-            int result = JOptionPane.showConfirmDialog(mySpreadSheetFrame, mainPanel, "Enter the spreadsheet's size:",
-                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-            if (result == JOptionPane.OK_OPTION) {
-                /** gets user input and creates a spreadsheet according to the input*/
-                int numColumns = Math.max(Integer.parseInt(columnSize.getText()), MIN_DIMENSION);
-                int numRows = Math.max(Integer.parseInt(rowSize.getText()), MIN_DIMENSION);
-
-            } else {
-                System.exit(0);
-            }
-        } catch (NumberFormatException e) {
-            // If invalid input is entered
-            // Both dimensions set to minimum size
-            rows = cols = MIN_DIMENSION;
-            JOptionPane.showMessageDialog(mySpreadSheetFrame.getContentPane(),
-                    "Invalid dimensions entered! Using default 3 x 3 table.",
-                    "Error! Invalid Dimensions!",
-                    JOptionPane.ERROR_MESSAGE);
+        if (result == JOptionPane.OK_OPTION) {
+            int rows = Integer.parseInt(rowsField.getText());
+            int columns = Integer.parseInt(columnsField.getText());
+            mySpreadSheet = new SpreadSheet(columns, rows);
+        } else {
+            System.exit(0);
         }
-        size.setSize(cols , rows);
-        return size;
     }
 
-    public void run(){
-        mySpreadSheetFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    /**
+     * Creates the JTable component to display the spreadsheet data.
+     */
+    private void createTable() {
+        DefaultTableModel model = new DefaultTableModel(mySpreadSheet.getMyColumns(), mySpreadSheet.getMyRows()){
 
-        mySpreadSheetFrame.add(new JScrollPane(mySpreadsheet.getTable(), JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
-        addMenuBar();
-        mySpreadSheetFrame.setVisible(true);
-        mySpreadSheetFrame.setLocationRelativeTo(null);
+            /**
+             *
+             */
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void setValueAt(Object value, int column, int row) {
+                super.setValueAt(value, column, row);
+                System.out.println(value);
+                System.out.println(row);
+                System.out.println(column);
+                mySpreadSheet.addCell(value.toString(), column, row);
+                System.out.println(mySpreadSheet.getCellAt(column, row).getCellValue());
+                Cell cell = mySpreadSheet.getCellAt(column, row);
+                if (cell != null) {
+                    System.out.println("this is the value that is got");
+                    System.out.println(value);
+                    cell.refreshCell(value.toString(), mySpreadSheet.getCellAt(column,row));
+                }
+            }
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return true;
+            }
+
+        };
+        myTable = new JTable(model);
+        //		for (int i = 0; i < mySpreadSheet.myNumRows; i++) {
+        //		    for (int j = 0; j < mySpreadSheet.myNumCols; j++) {
+        //		        model.setValueAt(mySpreadSheet.getCellAt(i, j).getCellValue(), i, j);
+        //		    }
+        //		}
+        myTable.getModel().addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                // TODO Auto-generated method stub
+                if (changeInProgress) return;
+                int row = e.getFirstRow();
+                int column = e.getColumn();
+                TableModel model = (TableModel) e.getSource();
+                Object value = model.getValueAt(row, column);
+                //updateSpreadsheet(row, column,value);
+                //Prints to the console
+//                System.out.println("this is the value");
+//                System.out.println(value);
+//                System.out.println("this is the row");
+//                System.out.println(row);
+//                System.out.println("this is the column");
+//                System.out.println(column);
+
+                //updateSpreadsheet( row, column,value.toString());
+                //mySpreadSheet.setCell(row, column, value.toString());
+            }
+        });
+        myTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        //myTable.getColumnModel().getColumn(0).setPreferredWidth(WIDTH);
+        myTable.getTableHeader().setReorderingAllowed(false);
+    }
+    /**
+     * Initializes the cells in the spreadsheet with empty values.
+     *
+     */
+    private void initializeSpreadSheet() {
+
+
+    }
+    /**
+     * Creates the JFrame to hold the JTable.
+     */
+    private void createFrame() {
+        myFrame = new JFrame("Spreadsheet");
+        // add row header to table using JScrollPane
+        JScrollPane table = new JScrollPane(myTable);
+        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        myFrame.add(table);
+        myFrame.pack();
+        myFrame.setVisible(true);
     }
 
-    private void addMenuBar() {
+    //	/**
+    //	 * Returns the label for the given column index, using Excel-style labels (A, B, C, ..., Z, AA, AB, ...).
+    //	 *
+    //	 * @param column the column index.
+    //	 * @return the label for the column.
+    //	 */
+    //	public String getColumnLabel(int column) {
+    //		StringBuilder sb = new StringBuilder();
+    //		while (column >= 0) {
+    //			int remainder = column % 26;
+    //			sb.append((char) ('A' + remainder));
+    //			column = (column / 26) - 1;
+    //		}
+    //		return sb.reverse().toString();
+    //	}
 
-    }
-    public static void main(final String[] theArgs) {
-        EventQueue.invokeLater(() -> new SpreadSheetGUI().run());
+    //	/**
+    //	 * Returns the label for the given row index, using Excel-style labels (1, 2, 3, ..., 26, 27, ...).
+    //	 *
+    //	 * @param row the row index.
+    //	 * @return the label for the row.
+    //	 */
+    //	public String getRowLabel(int row) {
+    //		StringBuilder sb = new StringBuilder();
+    //		while (row >= 0) {
+    //			int remainder = row % 26;
+    //			sb.append(remainder + 1);
+    //			row = (row / 26) - 1;
+    //		}
+    //		return sb.reverse().toString();
+    //	}
+
+    //	public void updateSpreadsheet(int row, int column, String value) {
+    //		mySpreadSheet.setCell(row, column, value);
+    //		mySpreadSheet.updateAllCells();
+    //	}
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new SpreadSheetGUI());
     }
 }

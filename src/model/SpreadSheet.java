@@ -4,135 +4,73 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * A class that defines the SpreadSheet operations.
+ *
+ * @author Matt Bauchspies mbauch72@uw.edu
+ * @author Mike Yarmoshik
+ * @author Elroy Mbabazi
+ * @author Max Yim
+ *
+ * @version 3/5/2023
+ */
+public class SpreadSheet {
+
+    /**
+     * The underlying 2D Array of the SpreadSheet, contains Cells.
+     */
+    private Cell[][] myCells;
 
 
-public class SpreadSheet extends DefaultTableModel implements TableModelListener, Serializable {
-
-    private Cell[][] mySpreadsheet;
-
-    private JTable myTable;
-
+    /**
+     * The total columns of the SpreadSheet.
+     */
     private int myColumns;
 
+    /**
+     * The total rows of the SpreadSheet.
+     */
     private int myRows;
-    private int myValue;
-    /** Count of letters. */
+
+    /**
+     * Static definition of "base" for columns based on English alphabet.
+     */
     public static final int NUM_LETTERS = 26;
 
+    private String myCurrentInput; // most recent input into GUI
 
-    private final Object[] columnNames;
-
-    public SpreadSheet(final int theRows, final int theColumns) {
-        mySpreadsheet = new Cell[theRows][theColumns];
+    /**
+     * The constructor for the SpreadSheet.
+     * @param theColumns The initial Columns in the SpreadSheet.
+     * @param theRows The initial Rows in the SpreadSheet.
+     */
+    public SpreadSheet(final int theColumns, final int theRows) {
+        if (theColumns <= 0 || theRows <= 0) {
+            throw new IllegalArgumentException("SpreadSheet dimensions must be positive.");
+        }
+        myCells = new Cell[theColumns][theRows];
         myColumns = theColumns;
-        myRows = theColumns;
-        columnNames = new String[myColumns + 1];
-
-        fillColumnNames();
-        initializeSpreadsheet();
-        myTable = new JTable(mySpreadsheet, columnNames){
-            /** A generated serial version UID. */
-            private static final long serialVersionUID = -8427343693180623327L;
-            @Override
-            public boolean isCellEditable(int row, int columns){
-                return true;
-            }
-        };
-
-        setupAllCells();
+        myRows = theRows;
     }
 
     /**
-     * This fine grain notification tells listeners the exact range
-     * of cells, rows, or columns that changed.
+     * Method for adding a Cell to the SpreadSheet at a given location.
+     * If a cell already exists, refresh the values instead.
      *
-     * @param theEvent a {@code TableModelEvent} to notify listener that a table model
-     *          has changed
+     * @param theInput The String input for the formula provided.
+     * @param theColumn The Column we want to add the Cell at.
+     * @param theRow The Row we want to add the Cell at.
      */
-    @Override
-    public void tableChanged(TableModelEvent theEvent) {
-        int row = theEvent.getFirstRow();
-        int column = theEvent.getColumn();
-        Cell cell = mySpreadsheet[row][column];
-
-        // Get the new formula from the cell and try to parse it.
-        // TODO: take input string and attempt to update cell
-        // cell.refreshCell(newformula); // something like this
-        boolean displayFormulas = false;
-
-    }
-
-    public JTable getTable() {
-        return myTable;
-    }
-
-
-    /**
-     * Fills in the names of the columns.
-     */
-    private void fillColumnNames() {
-        // Fill in the column names
-        columnNames[0] = "";
-        for (int i = 0; i < myColumns; i++) {
-            columnNames[i + 1] = convertColumn(i);
+    public void addCell(final String theInput, final int theColumn, final int theRow) {
+        checkBounds(theColumn, theRow);
+        if (myCells[theColumn][theRow] == null) {
+            myCells[theColumn][theRow] = new Cell(theInput, this).initialize();
+        } else {
+            myCells[theColumn][theRow].refreshCell(theInput, myCells[theColumn][theRow]);
         }
-    }
-
-    /**
-     * Converts the given column index to the corresponding column name.
-     *
-     * @param theColumn the index of the column
-     * @return the corresponding column name
-     */
-    private String convertColumn(final int theColumn) {
-        final StringBuilder result = new StringBuilder();
-        int column = theColumn;
-
-        do {
-            column--;
-            result.insert(0, (char) ('A' + column % NUM_LETTERS));
-            column /= NUM_LETTERS;
-        }
-        while (column > 0);
-        return result.toString();
-    }
-
-    /**
-     * Initialize the spreadsheet array.
-     */
-    public void initializeSpreadsheet() {
-        mySpreadsheet = new Cell[myRows][myColumns];
-        for (int row = 0; row < myRows; row++) {
-            for (int col = 0; col < myColumns; col++) {
-                mySpreadsheet[row][col] = new Cell(convertColumn(col) + (row + 1), this);
-            }
-        }
-
-    }
-
-    /**
-     * Sets up all the cells with the correct formulas and values.
-     */
-    private void setupAllCells() {
-        for (int row = 0; row < myRows; row++) {
-            for (int col = 0; col < myColumns; col++) {
-                Cell cell = mySpreadsheet[row][col];
-//                String formula = (String) myTable.getValueAt(row, col);
-//                cell.refreshCell(formula); // buggy at the moment, but this is the same issue as the above todo
-            }
-        }
-    }
-
-    public void addCell(final String theInput, final int theRow, final int theColumn) {
-        mySpreadsheet[theRow][theColumn].refreshCell(theInput);
     }
 
     /**
@@ -140,75 +78,73 @@ public class SpreadSheet extends DefaultTableModel implements TableModelListener
      * @param theRow The row of the cell.
      * @param theColumn The column of the cell.
      */
-    private String getCellFormula(final int theRow, final int theColumn) {
-        return mySpreadsheet[theRow][theColumn].getFormula();
+    private String getCellFormula(final int theColumn, final int theRow) {
+        return myCells[theColumn][theRow].getFormula();
     }
 
     /**
      * Prints a cell's formula
-     * @param theRow The row of the cell.
      * @param theColumn The column of the cell.
+     * @param theRow The row of the cell.
      */
-    public void printCellFormula(final int theRow, final int theColumn) {
-        System.out.println(getCellFormula(theRow, theColumn));
+    public void printCellFormula(final int theColumn, final int theRow) {
+        System.out.println(getCellFormula(theColumn, theRow));
     }
 
+
+//    /**
+//     * Prints the formulas of all cells.
+//     */
+//    //TODO confirm this works
+//    public void printAllFormulas() {
+//
+//        for (int row = 0; row < myRows; row++) {
+//            for (int col = 1; col < myColumns; col++) {
+//                // Prints the Column and Row with colon (e.g. A4: )
+//                System.out.print(convertColumn(col - 1) + row + ": ");
+//                // Prints the formula for that cell
+//                System.out.print(myCells[row][col].getFormula() + "   ");
+//            }
+//        }
+//
+//    }
 
     /**
-     * Prints the formulas of all cells.
+     * Getter for a cell at a particular location of the SpreadSheet.
+     * @param theColumn The Column we want to get the Cell from.
+     * @param theRow The Row we want to get the Cell from.
+     * @return The Cell contained at SpreadSheet[theColumn][theRow]
      */
-    public void printAllFormulas() {
-
-        for (int row = 0; row < myRows; row++) {
-            for (int col = 1; col < myColumns; col++) {
-                // Prints the Column and Row with colon (e.g. A4: )
-                System.out.print(convertColumn(col - 1) + row + ": ");
-                // Prints the formula for that cell
-                System.out.print(mySpreadsheet[row][col].getFormula() + "   ");
-            }
-        }
-
+    public Cell getCellAt(final int theColumn, final int theRow) {
+        checkBounds(theColumn, theRow);
+        // TODO null check
+        return myCells[theColumn][theRow];
     }
 
-    public Cell getCellAt(final int theRow, final int theColumn) {
-        return mySpreadsheet[theRow][theColumn];
-    }
 
-    /**
-     * Saves a serialized representation of the current instance of the spreadsheet
-     * into a specified filename. (WIP)
-     * @param theFileName the file name to save the current spreadsheet to.
-     */
-    public void saveSpreadSheet(String theFileName){
-        try {
-            FileOutputStream outFile = new FileOutputStream(theFileName);
-            ObjectOutputStream outObject = new ObjectOutputStream(outFile);
-            outObject.writeObject(mySpreadsheet);
-            outObject.close();
-            outFile.close();
-            System.out.println("Spreadsheet saved to file " + theFileName);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    private void checkBounds(final int theCol, final int theRow) {
+        if (theRow < 0 || theCol >= myColumns || theCol < 0 || theRow >= myRows) {
+            throw new IllegalArgumentException("Invalid cell index.");
         }
     }
 
-    /**
-     * Loads a previously saved instance of a spreadsheet. (WIP)
-     * @param theFileName The file to load the spreadsheet from.
-     */
-    public void loadSpreadSheet(String theFileName){
-        try {
-            FileInputStream inFile = new FileInputStream(theFileName);
-            ObjectInputStream inObject = new ObjectInputStream(inFile);
-            mySpreadsheet = (Cell[][]) inObject.readObject();
-            inObject.close();
-            inFile.close();
-            System.out.println("Spreadsheet loaded from " + theFileName);
+//
+//    public List<Cell> getCells() {
+//        final List<Cell> cells = new ArrayList<>();
+//        for (int i = 0; i < myNumRows; i++) {
+//            for (int j = 0; j < myNumCols; j++) {
+//                cells.add(myCells[i][j]);
+//            }
+//        }
+//        return cells;
+//    }
 
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public int getMyColumns() {
+        return myColumns;
+    }
+
+    public int getMyRows() {
+        return myRows;
     }
 
 }

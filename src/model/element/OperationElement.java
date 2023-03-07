@@ -76,11 +76,18 @@ public class OperationElement implements Element {
         };
     }
 
+    /**
+     * A toString method for the OperationElement as a readable String.
+     * @return A readable String of the OperationElement.
+     */
     @Override
     public String toString() {
         return "[OE: " + myOperation.character + "]";
     }
 
+    /**
+     * Enums to define different operations and their priority of execution.
+     */
     public enum Operation {
         EXPONENT('^', 3),
         LEFT_PARENTHESIS('(', 2), // Redundant?
@@ -91,14 +98,32 @@ public class OperationElement implements Element {
         ADDITION('+', 0),
         SUBTRACTION('-', 0);
 
+        /**
+         * The enumerated character.
+         */
         final char character;
+
+        /**
+         * The operation's priority.
+         */
         final int priority;
 
+        /**
+         * Constructor for the operation.
+         * @param character The character.
+         * @param priority The priority.
+         */
         Operation(char character, int priority) {
             this.character = character;
             this.priority = priority;
         }
 
+        /**
+         * Checks whether a character is an enumerated operation.
+         * @param character The character we are checking.
+         * @return the operation that the character represents.
+         * @throws IllegalArgumentException if an invalid character is provided.
+         */
         static Operation fromChar(final char character) {
             for (final Operation op : Operation.values()) {
                 if (character == op.character) return op;
