@@ -83,16 +83,18 @@ public class SpreadSheetGUI {
             private static final long serialVersionUID = 1L;
 
             @Override
-            public void setValueAt(Object value, int row, int column) {
-                super.setValueAt(value, row, column);
+            public void setValueAt(Object value, int column, int row) {
+                super.setValueAt(value, column, row);
+                System.out.println(value);
+                System.out.println(row);
+                System.out.println(column);
                 mySpreadSheet.addCell(value.toString(), column, row);
                 System.out.println(mySpreadSheet.getCellAt(column, row).getCellValue());
-                System.out.println(value);
-                Cell cell = mySpreadSheet.getCellAt(row, column);
+                Cell cell = mySpreadSheet.getCellAt(column, row);
                 if (cell != null) {
                     System.out.println("this is the value that is got");
                     System.out.println(value);
-                    cell.refreshCell(value.toString(), mySpreadSheet.getCellAt(row,column));
+                    cell.refreshCell(value.toString(), mySpreadSheet.getCellAt(column,row));
                 }
             }
 
