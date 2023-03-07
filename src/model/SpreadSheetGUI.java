@@ -86,7 +86,7 @@ public class SpreadSheetGUI {
             public void setValueAt(Object value, int row, int column) {
                 super.setValueAt(value, row, column);
                 mySpreadSheet.addCell(value.toString(), column, row);
-                System.out.println("this is the value that is set");
+                System.out.println(mySpreadSheet.getCellAt(column, row).getCellValue());
                 System.out.println(value);
                 Cell cell = mySpreadSheet.getCellAt(row, column);
                 if (cell != null) {

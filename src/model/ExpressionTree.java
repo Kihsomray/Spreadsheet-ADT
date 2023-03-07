@@ -6,6 +6,7 @@ import model.element.value.CellElement;
 import model.element.value.LiteralElement;
 import model.element.value.ValueElement;
 
+import java.util.Iterator;
 import java.util.Stack;
 
 /**
@@ -36,6 +37,9 @@ public class ExpressionTree {
     public ExpressionTree(final String theExpression, final Cell theCell) {
         myCell = theCell;
         myHeaderNode = constructTree(expressionPostfix(theExpression), theCell);
+        if (myCell.checkCycle()) {
+            throw new IllegalArgumentException("This is a cycle");
+        }
     }
 
     /**
@@ -177,16 +181,11 @@ public class ExpressionTree {
     // calculates recursively
     private int calculate(final Node node) {
         if (node == null) throw new IllegalArgumentException("The expression is invalid!");
-        if (node.element instanceof OperationElement) {
-            return ((OperationElement) node.element).evaluate(calculate(node.left), calculate(node.right));
+
+        if (node.element instanceof OperationElement operationElement) {
+            return operationElement.evaluate(calculate(node.left), calculate(node.right));
         } else {
-            if (node.element instanceof CellElement) {
-                CellElement currentElement = new CellElement(myCell.getSpreadSheet());
-                return currentElement.getValue();
-            }
-            else {
-                return ((ValueElement) node.element).getValue();
-            }
+            return ((ValueElement) node.element).getValue();
         }
     }
 

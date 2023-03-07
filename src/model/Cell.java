@@ -90,13 +90,36 @@ public class Cell {
         }
     }
 
+    public boolean checkCycle(){
+        for (Cell c : myDependents) {
+            if (c.checkCycle(this)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkCycle(final Cell theCell) {
+        if (myDependents.isEmpty()) {
+            return false;
+        }
+        if (theCell == this) {
+            return true;
+        }
+        for (Cell c : myDependents) {
+            if (c.checkCycle(theCell)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Helper method to update the value of the cell.
      * Calls updateDependents to also update any necessary dependencies after this.
      */
     private void updateCellValue() {
         myCellValue = myExpressionTree.calculate();
-        updateDependents(); //TODO: confirm this actually works
     }
 
 
