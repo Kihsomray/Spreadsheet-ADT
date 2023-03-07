@@ -179,6 +179,9 @@ public class SpreadSheet {
 
             String[] cells = (reader.readLine().split(", "));
 
+            reader.close();
+            inputFile.close();
+
             clearCells();
             setMyColumns(Integer.parseInt(cells[0])); //spot 0 contains col
             setMyRows(Integer.parseInt(cells[1])); //spo1 contains row
