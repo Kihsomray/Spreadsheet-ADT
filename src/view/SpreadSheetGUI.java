@@ -1,23 +1,16 @@
-package model;
+package view;
 
+import model.Cell;
 import model.SpreadSheet;
 
-import java.awt.GridLayout;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 
@@ -29,21 +22,57 @@ public class SpreadSheetGUI {
 
     public JFrame myFrame;
 
-    //  private final Timer myTimer;
+
+    private JTextField textField;
+
+    private JButton insertButton;
+
+    public JMenuBar myMenuBar;
+
+    private JPanel insertPanel;
+
     private boolean changeInProgress = false;
 
     /** The width of the column of row numbers in pixels. */
     public static final int WIDTH = 30;
 
-    //	private JLabel myRowHeader;
-    //
-    //	private JLabel myColumnHeader;
 
     public SpreadSheetGUI() {
+        myMenuBar = new JMenuBar();
+        textField = new JTextField(50);
+        insertPanel= new JPanel(new FlowLayout());
         promptUserForDimensions();
         initializeSpreadSheet();
+        insertPanel();
         createTable();
         createFrame();
+    }
+
+    private void insertPanel() {
+        insertPanel.add(textField);
+        insertButton = new JButton("Insert");
+        insertButton.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent theEvent) {
+                insertData();
+            }
+        });
+        insertPanel.add(insertButton);
+
+    }
+
+    private void insertData() {
+        //retrieve the indices of the selected cell
+        int rowIndex = myTable.getSelectedRow();
+        int columnIndex = myTable.getSelectedColumn();
+
+        //checking if the cell has been selected
+        if (rowIndex == -1 || columnIndex == -1) {
+            JOptionPane.showMessageDialog(myFrame, "Please select a cell to insert the data.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        DefaultTableModel model = (DefaultTableModel)myTable.getModel();
+        model.setValueAt(textField.getText(),rowIndex,columnIndex);
+        textField.setText("");
     }
 
     /**
@@ -83,16 +112,16 @@ public class SpreadSheetGUI {
             private static final long serialVersionUID = 1L;
 
             @Override
-            public void setValueAt(Object value, int row, int column) {
-                super.setValueAt(value, row, column);
+            public void setValueAt(Object value, int column, int row) {
+                try {
+                super.setValueAt(value, column, row);
                 mySpreadSheet.addCell(value.toString(), column, row);
-                System.out.println("this is the value that is set");
-                System.out.println(value);
-                Cell cell = mySpreadSheet.getCellAt(row, column);
+                Cell cell = mySpreadSheet.getCellAt(column, row);
                 if (cell != null) {
-                    System.out.println("this is the value that is got");
-                    System.out.println(value);
-                    cell.refreshCell(value.toString(), mySpreadSheet.getCellAt(row,column));
+                    super.setValueAt(cell.getCellValue(), column, row); // update cell value in JTable
+                }
+                } catch (Exception e) {
+                    System.err.println("Error setting cell value: " + e.getMessage());
                 }
             }
 
@@ -103,11 +132,7 @@ public class SpreadSheetGUI {
 
         };
         myTable = new JTable(model);
-        //		for (int i = 0; i < mySpreadSheet.myNumRows; i++) {
-        //		    for (int j = 0; j < mySpreadSheet.myNumCols; j++) {
-        //		        model.setValueAt(mySpreadSheet.getCellAt(i, j).getCellValue(), i, j);
-        //		    }
-        //		}
+
         myTable.getModel().addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
@@ -117,17 +142,6 @@ public class SpreadSheetGUI {
                 int column = e.getColumn();
                 TableModel model = (TableModel) e.getSource();
                 Object value = model.getValueAt(row, column);
-                //updateSpreadsheet(row, column,value);
-                //Prints to the console
-//                System.out.println("this is the value");
-//                System.out.println(value);
-//                System.out.println("this is the row");
-//                System.out.println(row);
-//                System.out.println("this is the column");
-//                System.out.println(column);
-
-                //updateSpreadsheet( row, column,value.toString());
-                //mySpreadSheet.setCell(row, column, value.toString());
             }
         });
         myTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -142,55 +156,34 @@ public class SpreadSheetGUI {
 
 
     }
+
+    /** Adds the menuBar to the Frame*/
+    private void addMenuBar(){
+        myMenuBar.add(new FileMenu(myFrame).getFileMenu());
+        myMenuBar.add(new OptionsMenu(myFrame,mySpreadSheet,myTable).getOptionsMenu());
+        myMenuBar.add(new HelpMenu().getHelpMenu());
+        myFrame.setJMenuBar(myMenuBar);
+    }
+
     /**
      * Creates the JFrame to hold the JTable.
      */
     private void createFrame() {
         myFrame = new JFrame("Spreadsheet");
         // add row header to table using JScrollPane
-        JScrollPane table = new JScrollPane(myTable);
+        JScrollPane table = new JScrollPane(myTable,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        addMenuBar();
+        myFrame.add(insertPanel,BorderLayout.NORTH);
+        Dimension tableSize = myTable.getSize();
+        myFrame.setSize(tableSize);
         myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        myFrame.add(table);
+        myFrame.add( table, BorderLayout.CENTER);
         myFrame.pack();
         myFrame.setVisible(true);
+        myFrame.setLocationRelativeTo(null);
     }
 
-    //	/**
-    //	 * Returns the label for the given column index, using Excel-style labels (A, B, C, ..., Z, AA, AB, ...).
-    //	 *
-    //	 * @param column the column index.
-    //	 * @return the label for the column.
-    //	 */
-    //	public String getColumnLabel(int column) {
-    //		StringBuilder sb = new StringBuilder();
-    //		while (column >= 0) {
-    //			int remainder = column % 26;
-    //			sb.append((char) ('A' + remainder));
-    //			column = (column / 26) - 1;
-    //		}
-    //		return sb.reverse().toString();
-    //	}
-
-    //	/**
-    //	 * Returns the label for the given row index, using Excel-style labels (1, 2, 3, ..., 26, 27, ...).
-    //	 *
-    //	 * @param row the row index.
-    //	 * @return the label for the row.
-    //	 */
-    //	public String getRowLabel(int row) {
-    //		StringBuilder sb = new StringBuilder();
-    //		while (row >= 0) {
-    //			int remainder = row % 26;
-    //			sb.append(remainder + 1);
-    //			row = (row / 26) - 1;
-    //		}
-    //		return sb.reverse().toString();
-    //	}
-
-    //	public void updateSpreadsheet(int row, int column, String value) {
-    //		mySpreadSheet.setCell(row, column, value);
-    //		mySpreadSheet.updateAllCells();
-    //	}
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new SpreadSheetGUI());

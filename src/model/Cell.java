@@ -45,10 +45,19 @@ public class Cell {
      * @param theInput the expression stored in the cell.
      */
     Cell(final String theInput, final SpreadSheet theSpreadSheet) {
-        myExpressionTree = new ExpressionTree(theInput, this);
         myFormulaInput = theInput;
         mySpreadSheet = theSpreadSheet;
+    }
+
+    /**
+     * Initializes the cell object
+     *
+     * @return reference to current cell
+     */
+    public Cell initialize() {
+        myExpressionTree = new ExpressionTree(myFormulaInput, this);
         updateCellValue();
+        return this;
     }
 
     /**
@@ -81,13 +90,36 @@ public class Cell {
         }
     }
 
+    public boolean checkCycle(){
+        for (Cell c : myDependents) {
+            if (c.checkCycle(this)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkCycle(final Cell theCell) {
+        if (myDependents.isEmpty()) {
+            return false;
+        }
+        if (theCell == this) {
+            return true;
+        }
+        for (Cell c : myDependents) {
+            if (c.checkCycle(theCell)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Helper method to update the value of the cell.
      * Calls updateDependents to also update any necessary dependencies after this.
      */
     private void updateCellValue() {
         myCellValue = myExpressionTree.calculate();
-        updateDependents(); //TODO: confirm this actually works
     }
 
 

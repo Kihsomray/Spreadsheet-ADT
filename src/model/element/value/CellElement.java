@@ -80,6 +80,7 @@ public class CellElement implements ValueElement {
      * @return The cell that CellElement references.
      */
     public Cell getCell() {
+        System.out.println("r-" + myRow + ", c-" + myColumn + " is " + mySpreadSheet.getCellAt(myRow, myColumn));
         return mySpreadSheet.getCellAt(myRow, myColumn);
     }
 
