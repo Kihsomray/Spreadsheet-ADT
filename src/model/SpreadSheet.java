@@ -92,22 +92,6 @@ public class SpreadSheet {
     }
 
 
-//    /**
-//     * Prints the formulas of all cells.
-//     */
-//    //TODO confirm this works
-//    public void printAllFormulas() {
-//
-//        for (int row = 0; row < myRows; row++) {
-//            for (int col = 1; col < myColumns; col++) {
-//                // Prints the Column and Row with colon (e.g. A4: )
-//                System.out.print(convertColumn(col - 1) + row + ": ");
-//                // Prints the formula for that cell
-//                System.out.print(myCells[row][col].getFormula() + "   ");
-//            }
-//        }
-//
-//    }
 
     /**
      * Getter for a cell at a particular location of the SpreadSheet.
@@ -128,16 +112,12 @@ public class SpreadSheet {
         }
     }
 
-//
-//    public List<Cell> getCells() {
-//        final List<Cell> cells = new ArrayList<>();
-//        for (int i = 0; i < myNumRows; i++) {
-//            for (int j = 0; j < myNumCols; j++) {
-//                cells.add(myCells[i][j]);
-//            }
-//        }
-//        return cells;
-//    }
+    public String setFormula (String s) {
+        //TODO bound checking
+        myCurrentInput=s;
+        System.out.println(myCurrentInput);
+        return myCurrentInput;
+    }
 
     public int getMyColumns() {
         return myColumns;
