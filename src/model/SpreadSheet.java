@@ -145,11 +145,13 @@ public class SpreadSheet {
      * @param theFileName name of the file.
      */
     public void saveSheet(String theFileName) {
+        //build string, first two elements are the col and row size.
         StringBuilder result = new StringBuilder(getMyColumns() + ", " + getMyRows() + ", ");
 
+
         for (int col = 0; col < getMyColumns(); col++) {
-            for (int row = 0; row < getMyRows(); row++) {
-                if (getCellAt(col,row) != null) {
+            for (int row = 0; row < getMyRows(); row++) { //add string representation of cell into string.
+                if (getCellAt(col,row) != null) { //nulls are ignored.
                     result.append(col +";" + row + ";" + getCellFormula(col,row) + ", ");
                 } //append cells to result
             }
@@ -171,11 +173,11 @@ public class SpreadSheet {
      * @param theFileName the text file that holds the data for the spreadsheet.
      */
     public void loadSheet(String theFileName) {
-
         try {
             FileReader inputFile = new FileReader(theFileName);
             BufferedReader reader = new BufferedReader(inputFile);
 
+            //seperate elements of text file by comma
             String[] cells = (reader.readLine().split(", "));
 
             reader.close();
@@ -186,10 +188,10 @@ public class SpreadSheet {
             setMyRows(Integer.parseInt(cells[1])); //spo1 contains row
 
             for (int i = 2; i < cells.length; i++) {
-                String[] elements = (cells[i].split(";"));
-                int column = Integer.parseInt(elements[0]);
-                int row = Integer.parseInt(elements[1]);
-                String input = elements[2];
+                String[] elements = (cells[i].split(";")); //split the string representation up again, based on the elements of the cell.
+                int column = Integer.parseInt(elements[0]); //first element is col
+                int row = Integer.parseInt(elements[1]); //second is row
+                String input = elements[2]; //third is the actual input of the cell.
                 addCell(input, column, row);
             }
 
@@ -205,6 +207,22 @@ public class SpreadSheet {
         for (int col = 0; col < getMyColumns(); col++) {
             for (int row = 0; row < getMyRows(); row++) {
                 myCells[col][row] = null;
+            }
+        }
+    }
+
+    /**
+     * Method to print all the cells of the spreadsheet.
+     */
+    public void printAllFormulas() {
+        for (int col = 0; col < myColumns; col++) {
+            System.out.println();
+            for (int row = 0; row < myRows; row++) {
+                if (myCells[col][row] != null) {
+                    System.out.println(myCells[col][row].getFormula());
+                } else {
+                    System.out.println("null");
+                }
             }
         }
     }
