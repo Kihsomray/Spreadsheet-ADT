@@ -141,17 +141,17 @@ public class SpreadSheet {
 //    }
 
     /**
-     * Saves the contents of the sheets into a text file.
+     * Saves the contents of the sheet into a text file.
      *
      * @param theFileName name of the file.
      */
     public void saveSheet(String theFileName) {
-        StringBuilder result = new StringBuilder(myColumns + ", " + myRows + ", ");
+        StringBuilder result = new StringBuilder(getMyColumns() + ", " + getMyRows() + ", ");
 
-        for (int col = 0; col < myColumns; col++) {
-            for (int row = 0; row < myRows; row++) {
-                if (myCells[col][row] != null) {
-                    result.append(getColumnLabel(col) +"{" + row + "{" + getCellFormula(col,row) + "}, ");
+        for (int col = 0; col < getMyColumns(); col++) {
+            for (int row = 0; row < getMyRows(); row++) {
+                if (getCellAt(col,row) != null) {
+                    result.append(col +";" + row + ";" + getCellFormula(col,row) + ", ");
                 } //append cells to result
             }
         }
@@ -167,7 +167,7 @@ public class SpreadSheet {
     }
 
     /**
-     * Loads a spreadsheet.
+     * Loads a spreadsheet. (WIP)
      *
      * @param theFileName the text file that holds the data for the spreadsheet.
      */
@@ -179,8 +179,16 @@ public class SpreadSheet {
 
             String[] cells = (reader.readLine().split(", "));
 
+            clearCells();
+            setMyColumns(Integer.parseInt(cells[0])); //spot 0 contains col
+            setMyRows(Integer.parseInt(cells[1])); //spo1 contains row
+
             for (int i = 2; i < cells.length; i++) {
-                System.out.println(cells[i]); //testing saved text file
+                String[] elements = (cells[i].split(";"));
+                int column = Integer.parseInt(elements[0]);
+                int row = Integer.parseInt(elements[1]);
+                String input = elements[2];
+                addCell(input, column, row);
             }
 
             } catch (Exception e) {
@@ -197,12 +205,29 @@ public class SpreadSheet {
         return sb.reverse().toString();
     }
 
+    /**
+     * clears the contents of the cells.
+     */
+    public void clearCells(){
+        for (int col = 0; col < getMyColumns(); col++) {
+            for (int row = 0; row < getMyRows(); row++) {
+                myCells[col][row] = null;
+            }
+        }
+    }
+
     public int getMyColumns() {
         return myColumns;
     }
 
     public int getMyRows() {
         return myRows;
+    }
+    public void setMyColumns(int theColSize){
+        myColumns = theColSize;
+    }
+    public void setMyRows(int theRowSize){
+        myColumns = theRowSize;
     }
 
 }
