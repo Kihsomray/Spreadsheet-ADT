@@ -4,8 +4,7 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -174,6 +173,19 @@ public class SpreadSheet {
      */
     public void loadSheet(String theFileName) {
 
+        try {
+            FileReader inputFile = new FileReader(theFileName);
+            BufferedReader reader = new BufferedReader(inputFile);
+
+            String[] cells = (reader.readLine().split(", "));
+
+            for (int i = 2; i < cells.length; i++) {
+                System.out.println(cells[i]); //testing saved text file
+            }
+
+            } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     public String getColumnLabel(int column) {
         StringBuilder sb = new StringBuilder();
