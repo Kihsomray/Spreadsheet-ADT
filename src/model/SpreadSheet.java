@@ -4,6 +4,10 @@ import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,4 +131,81 @@ public class SpreadSheet {
         return myRows;
     }
 
+    public void setMyColumns(int theColSize){
+        myColumns = theColSize;
+    }
+    public void setMyRows(int theRowSize){
+        myColumns = theRowSize;
+    }
+
+
+    /**
+     * Saves the contents of the sheet into a text file.
+     *
+     * @param theFileName name of the file.
+     */
+    public void saveSheet(String theFileName) {
+        StringBuilder result = new StringBuilder(getMyColumns() + ", " + getMyRows() + ", ");
+
+        for (int col = 0; col < getMyColumns(); col++) {
+            for (int row = 0; row < getMyRows(); row++) {
+                if (getCellAt(col,row) != null) {
+                    result.append(col +";" + row + ";" + getCellFormula(col,row) + ", ");
+                } //append cells to result
+            }
+        }
+
+        try {
+            FileWriter writer = new FileWriter(theFileName);
+            writer.write(result.toString()); //write result to text file.
+            writer.close();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Loads a spreadsheet. (WIP)
+     *
+     * @param theFileName the text file that holds the data for the spreadsheet.
+     */
+    public void loadSheet(String theFileName) {
+
+        try {
+            FileReader inputFile = new FileReader(theFileName);
+            BufferedReader reader = new BufferedReader(inputFile);
+
+            String[] cells = (reader.readLine().split(", "));
+
+            reader.close();
+            inputFile.close();
+
+            clearCells();
+            setMyColumns(Integer.parseInt(cells[0])); //spot 0 contains col
+            setMyRows(Integer.parseInt(cells[1])); //spo1 contains row
+
+            for (int i = 2; i < cells.length; i++) {
+                String[] elements = (cells[i].split(";"));
+                int column = Integer.parseInt(elements[0]);
+                int row = Integer.parseInt(elements[1]);
+                String input = elements[2];
+                addCell(input, column, row);
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * clears the contents of the cells.
+     */
+    public void clearCells(){
+        for (int col = 0; col < getMyColumns(); col++) {
+            for (int row = 0; row < getMyRows(); row++) {
+                myCells[col][row] = null;
+            }
+        }
+    }
 }
