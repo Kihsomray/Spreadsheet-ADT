@@ -210,7 +210,7 @@ public class SpreadSheetGUI {
     private void initializeSpreadSheet() {
     }
     /** Adds the menuBar to the Frame*/
-    private void addMenuBar(){
+    private void addMenuBar() {
         myMenuBar.add(new FileMenu(myFrame).getFileMenu());
         myMenuBar.add(new OptionsMenu(myFrame,mySpreadSheet,myTable).getOptionsMenu());
         myMenuBar.add(new HelpMenu().getHelpMenu());
@@ -234,11 +234,6 @@ public class SpreadSheetGUI {
         myFrame.pack();
         myFrame.setVisible(true);
         myFrame.setLocationRelativeTo(null);
-    }
-
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new SpreadSheetGUI());
     }
 
 }
