@@ -63,15 +63,15 @@ public class SpreadSheet {
      * @param theColumn The Column we want to add the Cell at.
      */
     public void addCell(final String theInput, final int theRow, final int theColumn) {
-        checkBounds(theRow, theColumn);
+        if (checkBounds(theRow, theColumn)) {
+            return;
+        }
         if (myCells[theRow][theColumn] == null) {
             myCells[theRow][theColumn] = new Cell(theInput, this).initialize();
         } else {
             myCells[theRow][theColumn].refreshCell(theInput, myCells[theRow][theColumn]);
         }
     }
-
-
 
     /**
      * Getter for a cell at a particular location of the SpreadSheet.
@@ -80,14 +80,14 @@ public class SpreadSheet {
      * @return The Cell contained at SpreadSheet[theColumn][theRow]
      */
     public Cell getCellAt(final int theRow, final int theColumn) {
-        checkBounds(theRow, theColumn);
+        if (checkBounds(theRow, theColumn)) {
+            return null;
+        }
         return myCells[theRow][theColumn];
     }
 
-    private void checkBounds(final int theRow, final int theColumn) {
-        if (theRow < 0 || theColumn >= myColumns || theColumn < 0 || theRow >= myRows) {
-            throw new IllegalArgumentException("Invalid cell index.");
-        }
+    private boolean checkBounds(final int theRow, final int theColumn) {
+        return theRow < 0 || theColumn >= myColumns || theColumn < 0 || theRow >= myRows;
     }
 
     public String setFormula(String s) {

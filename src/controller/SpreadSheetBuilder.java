@@ -66,8 +66,8 @@ public class SpreadSheetBuilder {
 
         // TODO add non-integer parsing catching
         if (result == JOptionPane.OK_OPTION) {
-            int rows = Integer.parseInt(rowsField.getText());
-            int columns = Integer.parseInt(columnsField.getText());
+            final int rows = Integer.parseInt(rowsField.getText());
+            final int columns = Integer.parseInt(columnsField.getText());
             return new SpreadSheet(rows, columns);
         } else {
 
