@@ -70,6 +70,7 @@ public class Cell {
             myExpressionTree = new ExpressionTree(theInput, this);
             myFormulaInput = theInput;
             updateCellValue();
+            updateDependents();
         }
     }
 

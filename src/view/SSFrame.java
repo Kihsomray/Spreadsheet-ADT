@@ -52,7 +52,7 @@ public class SSFrame extends JFrame {
     /**
      * The width of the column of row numbers in pixels.
      */
-    public static final int ROW_COLUMN_WIDTH = 30;
+    public static final int ROW_COLUMN_WIDTH = 40;
 
 
     public SSFrame(final SpreadSheet theSpreadSheet) {

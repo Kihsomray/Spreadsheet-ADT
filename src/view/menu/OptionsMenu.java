@@ -60,7 +60,9 @@ public class OptionsMenu extends JMenu implements PropertyChangeListener {
         setupOptionsMenu();
     }
 
-    /** Add menu items to OptionsMenu and sets a Mnemonic. */
+    /**
+     * Add menu items to OptionsMenu and sets a Mnemonic.
+     */
     private void setupOptionsMenu() {
 
         clearAll();
