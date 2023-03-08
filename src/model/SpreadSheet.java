@@ -94,13 +94,6 @@ public class SpreadSheet {
         return theRow < 0 || theColumn >= myColumns || theColumn < 0 || theRow >= myRows;
     }
 
-    public String setFormula(String s) {
-        //TODO bound checking
-        myCurrentInput=s;
-        System.out.println(myCurrentInput);
-        return myCurrentInput;
-    }
-
     public int getMyColumns() {
         return myColumns;
     }
@@ -108,14 +101,6 @@ public class SpreadSheet {
     public int getMyRows() {
         return myRows;
     }
-
-    public void setMyColumns(int theColSize){
-        myColumns = theColSize;
-    }
-    public void setMyRows(int theRowSize){
-        myColumns = theRowSize;
-    }
-
 
     /**
      * Saves the contents of the sheet into a text file.
