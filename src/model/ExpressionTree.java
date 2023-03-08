@@ -55,17 +55,14 @@ public class ExpressionTree {
         );
 
         Element element = theStack.pop();  // need to handle stack underflow
-        //System.out.println(element);
         if (element instanceof ValueElement) {
             if (element instanceof CellElement cellElement) {
                 try {
                     cellElement.getCell().addDependency(theCell);
                 } catch (NullPointerException e) {
-
-                    e.printStackTrace();
                     // this should never be thrown
                     throw new IllegalArgumentException(
-                            "Only a reference to a non-empty cell can be made!"
+                            "The value is not a cell within this spreadsheet!"
                     );
                 }
             }
@@ -123,14 +120,22 @@ public class ExpressionTree {
             char c = theExpression.charAt(index);
 
             if ((returnStack.isEmpty() && c == '-') || (previousOperation != null && previousOperation.getPriority() <= 1 && c == '-')) {
-                index++;
+
+                int previous = index++;
                 while (index < theExpression.length()) {
                     if (!Character.isWhitespace(theExpression.charAt(index))) break;
                     index++;
                 }
                 c = theExpression.charAt(index);
-                previousValue = false;
-                isNegative = true;
+
+                if (c == '(') {
+                    c = '0';
+                    index = previous - 1;
+                } else {
+                    previousValue = false;
+                    isNegative = true;
+                }
+
             }
 
             // ASSERT: ch now contains the first character of the next token.

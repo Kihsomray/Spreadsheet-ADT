@@ -90,11 +90,9 @@ public class CellElement implements ValueElement {
     public Cell getCell() {
         //System.out.println("r-" + myRow + ", c-" + myColumn + " is " + mySpreadSheet.getCellAt(myRow, myColumn));
 
-        System.out.println((mySpreadSheet.getCellAt(myRow, myColumn) == null));
         if (mySpreadSheet.getCellAt(myRow, myColumn) == null) {
             mySpreadSheet.addCell(null, myRow, myColumn, false);
         }
-        System.out.println((mySpreadSheet.getCellAt(myRow, myColumn) == null));
         return mySpreadSheet.getCellAt(myRow, myColumn);
     }
 
