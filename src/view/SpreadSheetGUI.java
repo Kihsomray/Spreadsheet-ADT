@@ -10,6 +10,8 @@ import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class SpreadSheetGUI {
 
@@ -72,17 +74,39 @@ public class SpreadSheetGUI {
     private void addMenu() {
         JMenu formulaMenu = new JMenu("Formula");
         JMenuItem getFormulaItem = new JMenuItem("Get Formula");
-        getFormulaItem.addActionListener(e -> {
-            int row = myTable.getSelectedRow();
-            int col = myTable.getSelectedColumn();
-            if (row != -1 && col != -1) {
-                String formula = mySpreadSheet.getCellAt(col-1, row).getFormula();
-                textField.setText(formula);
+        getFormulaItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = myTable.getSelectedRow();
+                int col = myTable.getSelectedColumn();
+                if (row != -1 && col != -1) {
+                    String formula = mySpreadSheet.getCellAt(col-1, row).getFormula();
+                    textField.setText(formula);
+                }
             }
         });
         formulaMenu.add(getFormulaItem);
+        // Add mouse clicked event to the cells in the JTable
+        myTable.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                int row = myTable.rowAtPoint(evt.getPoint());
+                int col = myTable.columnAtPoint(evt.getPoint());
+                if (row != -1 && col != -1) {
+                    if (mySpreadSheet.getCellAt(col-1, row) == null) {
+                        textField.setText("");
+                    } else {
+                    String formula = mySpreadSheet.getCellAt(col-1, row).getFormula();
+                    if (formula != null && !formula.isEmpty()) {
+                        textField.setText(formula);
+                    }
+                    }
+                }
+            }
+        });
         myMenuBar.add(formulaMenu);
     }
+
+
     /**
      * Prompts the user for the number of rows and columns to create.
      */
