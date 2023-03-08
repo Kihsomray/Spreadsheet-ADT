@@ -1,7 +1,7 @@
 package controller;
 
 /**
- * controller.Main class of the entire program.
+ * Main class of the entire program.
  *
  * @author Matt Bauchspies
  * @author Elroy O Mbabazi

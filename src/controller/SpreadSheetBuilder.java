@@ -6,6 +6,9 @@ import view.SSFrame;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Used to build a SpreadSheet.
+ */
 public class SpreadSheetBuilder {
 
     /**

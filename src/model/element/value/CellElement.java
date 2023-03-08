@@ -35,13 +35,13 @@ public class CellElement implements ValueElement {
         myNegative = theNegative;
     }
 
-    //TODO: comments on this method
     /**
      * Sets the row and column of the CellElement, as well as performing calculations on theFormula contained.
-     * @param theFormula
-     * @param theIndex
-     * @param theElement
-     * @return
+     *
+     * @param theFormula Formula passed to parse
+     * @param theIndex Index to check element
+     * @param theElement Created cell element
+     * @return Index after element
      */
     public static int applyValues(final String theFormula, int theIndex, final CellElement theElement) {
         int column = 0;
@@ -74,6 +74,7 @@ public class CellElement implements ValueElement {
 
     /**
      * Getter method for the value in this CellElement.
+     *
      * @return The integer value this CellElement represents.
      */
     @Override
@@ -83,17 +84,20 @@ public class CellElement implements ValueElement {
 
     /**
      * Gets the Cell that this CellElement references.
+     *
      * @return The cell that CellElement references.
      */
     public Cell getCell() {
         //System.out.println("r-" + myRow + ", c-" + myColumn + " is " + mySpreadSheet.getCellAt(myRow, myColumn));
+
+        System.out.println((mySpreadSheet.getCellAt(myRow, myColumn) == null));
+        if (mySpreadSheet.getCellAt(myRow, myColumn) == null) {
+            mySpreadSheet.addCell(null, myRow, myColumn, false);
+        }
+        System.out.println((mySpreadSheet.getCellAt(myRow, myColumn) == null));
         return mySpreadSheet.getCellAt(myRow, myColumn);
     }
 
-    /**
-     * A toString method for returning information about the CellElement.
-     * @return
-     */
     @Override
     public String toString() {
         return "[CE: r-" + myRow + ", c-" + myColumn + "]";

@@ -70,7 +70,7 @@ public class Cell {
      * @return reference to current cell
      */
     public Cell initialize(final boolean updateGUI) {
-        myExpressionTree = new ExpressionTree(myFormulaInput, this);
+        if (myFormulaInput != null) myExpressionTree = new ExpressionTree(myFormulaInput, this);
         updateCellValue(updateGUI);
         return this;
     }
@@ -82,7 +82,7 @@ public class Cell {
      */
     void refreshCell(final String theInput) {
         if (!Objects.equals(theInput, myFormulaInput)) {
-            myExpressionTree = new ExpressionTree(theInput, this);
+            if (theInput != null) myExpressionTree = new ExpressionTree(theInput, this);
             myFormulaInput = theInput;
             updateCellValue(false);
             updateDependents();
@@ -138,7 +138,7 @@ public class Cell {
      * @param updateGUI Should GUI update with myCellValue
      */
     private void updateCellValue(boolean updateGUI) {
-        myCellValue = myExpressionTree.calculate();
+        myCellValue = myFormulaInput == null ? 0 : myExpressionTree.calculate();
         if (updateGUI) {
             ((SSTableModel) mySpreadSheet
                     .getSpreadSheetFrame()

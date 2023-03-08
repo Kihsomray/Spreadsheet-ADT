@@ -54,13 +54,16 @@ public class ExpressionTree {
                 "The entered expression is not a valid formula!"
         );
 
-        final Element element = theStack.pop();  // need to handle stack underflow
+        Element element = theStack.pop();  // need to handle stack underflow
         //System.out.println(element);
         if (element instanceof ValueElement) {
             if (element instanceof CellElement cellElement) {
                 try {
                     cellElement.getCell().addDependency(theCell);
                 } catch (NullPointerException e) {
+
+                    e.printStackTrace();
+                    // this should never be thrown
                     throw new IllegalArgumentException(
                             "Only a reference to a non-empty cell can be made!"
                     );

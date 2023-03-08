@@ -50,7 +50,7 @@ public class HelpMenu extends JMenu {
             @Override
             public void actionPerformed(final ActionEvent theEvent) {
                 try {
-                    Desktop.getDesktop().browse(new URI("https://example.com/help"));
+                    Desktop.getDesktop().browse(new URI("https://spreadsheettables.godaddysites.com/"));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
