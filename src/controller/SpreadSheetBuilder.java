@@ -68,7 +68,7 @@ public class SpreadSheetBuilder {
         if (result == JOptionPane.OK_OPTION) {
             int rows = Integer.parseInt(rowsField.getText());
             int columns = Integer.parseInt(columnsField.getText());
-            return new SpreadSheet(columns, rows);
+            return new SpreadSheet(rows, columns);
         } else {
 
             // If they decided to quit

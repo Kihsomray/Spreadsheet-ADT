@@ -116,7 +116,7 @@ public class SSFrame extends JFrame {
             final int row = myTable.getSelectedRow();
             final int column = myTable.getSelectedColumn();
             if (row != -1 && column != -1) {
-                String formula = mySpreadSheet.getCellAt(column - 1, row).getFormula();
+                String formula = mySpreadSheet.getCellAt(row, column - 1).getFormula();
                 textField.setText(formula);
             }
         });

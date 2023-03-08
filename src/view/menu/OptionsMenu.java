@@ -133,7 +133,7 @@ public class OptionsMenu extends JMenu implements PropertyChangeListener {
      * @param theActionEvent Action event
      */
     private void adjustValues(final JMenuItem theMenuItem, final int theMnemonic, final ActionListener theActionEvent) {
-        theMenuItem.setEnabled(false);
+        theMenuItem.setEnabled(true);
         theMenuItem.setMnemonic(theMnemonic);
         theMenuItem.addActionListener(theActionEvent);
     }

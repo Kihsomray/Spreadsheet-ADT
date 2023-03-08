@@ -42,16 +42,16 @@ public class SpreadSheet {
 
     /**
      * The constructor for the SpreadSheet.
-     * @param theColumns The initial Columns in the SpreadSheet.
      * @param theRows The initial Rows in the SpreadSheet.
+     * @param theColumns The initial Columns in the SpreadSheet.
      */
-    public SpreadSheet(final int theColumns, final int theRows) {
+    public SpreadSheet(final int theRows, final int theColumns) {
         if (theColumns <= 0 || theRows <= 0) {
             throw new IllegalArgumentException("SpreadSheet dimensions must be positive.");
         }
-        myCells = new Cell[theColumns][theRows];
-        myColumns = theColumns;
+        myCells = new Cell[theRows][theColumns];
         myRows = theRows;
+        myColumns = theColumns;
     }
 
     /**
@@ -59,15 +59,15 @@ public class SpreadSheet {
      * If a cell already exists, refresh the values instead.
      *
      * @param theInput The String input for the formula provided.
-     * @param theColumn The Column we want to add the Cell at.
      * @param theRow The Row we want to add the Cell at.
+     * @param theColumn The Column we want to add the Cell at.
      */
-    public void addCell(final String theInput, final int theColumn, final int theRow) {
-        checkBounds(theColumn, theRow);
-        if (myCells[theColumn][theRow] == null) {
-            myCells[theColumn][theRow] = new Cell(theInput, this).initialize();
+    public void addCell(final String theInput, final int theRow, final int theColumn) {
+        checkBounds(theRow, theColumn);
+        if (myCells[theRow][theColumn] == null) {
+            myCells[theRow][theColumn] = new Cell(theInput, this).initialize();
         } else {
-            myCells[theColumn][theRow].refreshCell(theInput, myCells[theColumn][theRow]);
+            myCells[theRow][theColumn].refreshCell(theInput, myCells[theRow][theColumn]);
         }
     }
 
@@ -75,19 +75,17 @@ public class SpreadSheet {
 
     /**
      * Getter for a cell at a particular location of the SpreadSheet.
-     * @param theColumn The Column we want to get the Cell from.
      * @param theRow The Row we want to get the Cell from.
+     * @param theColumn The Column we want to get the Cell from.
      * @return The Cell contained at SpreadSheet[theColumn][theRow]
      */
-    public Cell getCellAt(final int theColumn, final int theRow) {
-        checkBounds(theColumn, theRow);
-        // TODO null check
+    public Cell getCellAt(final int theRow, final int theColumn) {
+        checkBounds(theRow, theColumn);
         return myCells[theRow][theColumn];
     }
 
-
-    private void checkBounds(final int theCol, final int theRow) {
-        if (theRow < 0 || theCol >= myColumns || theCol < 0 || theRow >= myRows) {
+    private void checkBounds(final int theRow, final int theColumn) {
+        if (theRow < 0 || theColumn >= myColumns || theColumn < 0 || theRow >= myRows) {
             throw new IllegalArgumentException("Invalid cell index.");
         }
     }
@@ -127,7 +125,7 @@ public class SpreadSheet {
 
         for (int col = 0; col < getMyColumns(); col++) {
             for (int row = 0; row < getMyRows(); row++) { //add string representation of cell into string.
-                final Cell cell = getCellAt(col, row);
+                final Cell cell = getCellAt(row, col);
 
                 // nulls are ignored
                 if (cell != null) {

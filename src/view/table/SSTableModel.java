@@ -53,7 +53,7 @@ public class SSTableModel extends DefaultTableModel {
             // update cell value in JTable
             final Cell cell = mySpreadSheet.getCellAt(theRow, theColumn - 1);
             if (cell != null) {
-                super.setValueAt(cell.getCellValue(), theRow, theColumn - 1);
+                super.setValueAt(cell.getCellValue(), theRow, theColumn);
             }
 
         } catch (Exception e) {
