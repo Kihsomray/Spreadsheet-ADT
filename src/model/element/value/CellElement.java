@@ -22,11 +22,17 @@ public class CellElement implements ValueElement {
     private final SpreadSheet mySpreadSheet;
 
     /**
+     * Is the result negative?
+     */
+    private boolean myNegative = false;
+
+    /**
      * Constructor for the CellElement, only defines the Spreadsheet.
      * @param theSpreadSheet The Spreadsheet that the Cell resides in.
      */
-    public CellElement(final SpreadSheet theSpreadSheet) {
+    public CellElement(final SpreadSheet theSpreadSheet, final boolean theNegative) {
         mySpreadSheet = theSpreadSheet;
+        myNegative = theNegative;
     }
 
     //TODO: comments on this method
@@ -72,7 +78,7 @@ public class CellElement implements ValueElement {
      */
     @Override
     public int getValue() {
-        return getCell().getCellValue();
+        return myNegative ? -getCell().getCellValue() : getCell().getCellValue();
     }
 
     /**

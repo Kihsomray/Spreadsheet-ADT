@@ -51,11 +51,11 @@ public class ExpressionTree {
      */
     private Node constructTree(final Stack<Element> theStack, final Cell theCell) {
         if (theStack.isEmpty()) throw new IndexOutOfBoundsException(
-                "THe entered expression is not a valid formula!"
+                "The entered expression is not a valid formula!"
         );
 
         final Element element = theStack.pop();  // need to handle stack underflow
-        //System.out.println(element);
+        System.out.println(element);
         if (element instanceof ValueElement) {
             if (element instanceof CellElement cellElement) {
                 try {
@@ -101,6 +101,12 @@ public class ExpressionTree {
         // used to check if previous was a value (ignores parenthesis)
         boolean previousValue = false;
 
+        // previous operator
+        OperationElement previousOperation = null;
+
+        // is negative
+        boolean isNegative = false;
+
         while (index < theExpression.length()) {
 
             // eliminate whitespace
@@ -113,9 +119,15 @@ public class ExpressionTree {
 
             char c = theExpression.charAt(index);
 
-            if (returnStack.isEmpty() && c == '-') {
-                c = '0';
-                index--;
+            if ((returnStack.isEmpty() && c == '-') || (previousOperation != null && previousOperation.getPriority() <= 1 && c == '-')) {
+                index++;
+                while (index < theExpression.length()) {
+                    if (!Character.isWhitespace(theExpression.charAt(index))) break;
+                    index++;
+                }
+                c = theExpression.charAt(index);
+                previousValue = false;
+                isNegative = true;
             }
 
             // ASSERT: ch now contains the first character of the next token.
@@ -135,7 +147,10 @@ public class ExpressionTree {
                 operatorStack.push(new OperationElement(c));
                 index++;
 
-                if (c != '(') previousValue = false;
+                if (c != '(') {
+                    previousValue = false;
+                    previousOperation = operatorStack.peek();
+                }
 
             } else if (c == ')') {
                 OperationElement operator;
@@ -170,9 +185,11 @@ public class ExpressionTree {
                 }
 
                 // place the literal on the output stack
-                returnStack.push(new LiteralElement(literal));
+                returnStack.push(new LiteralElement(isNegative ? -literal : literal));
 
                 previousValue = true;
+                isNegative = false;
+                previousOperation = null;
 
             } else if (Character.isAlphabetic(c)) {
 
@@ -181,11 +198,13 @@ public class ExpressionTree {
                 );
 
                 // We found a cell reference token
-                CellElement cell = new CellElement(myCell.getSpreadSheet());
+                CellElement cell = new CellElement(myCell.getSpreadSheet(), isNegative);
                 index = CellElement.applyValues(theExpression, index, cell);
                 returnStack.push(cell);
 
                 previousValue = true;
+                isNegative = false;
+                previousOperation = null;
 
             } else throw new IllegalArgumentException("Invalid characters contained in formula!");
 
