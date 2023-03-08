@@ -1,4 +1,4 @@
-package view;
+package view.menu;
 
 import javax.swing.*;
 import java.awt.*;
@@ -7,36 +7,35 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.net.URI;
 
-public class HelpMenu {
+/**
+ * Help menu contained within SpreadSheet menu bar.
+ *
+ * @author Elroy O Mbabazi
+ * @version 3/7/2023
+ */
+public class HelpMenu extends JMenu {
 
-    /** JMenu to hold Help menu items. */
-    private final JMenu myHelpMenu;
-
-    /** MenuItem to display help contents. */
+    /**
+     * MenuItem to display help contents.
+     */
     private final JMenuItem helpContents;
 
-    /** MenuItem to display info about PowerPaint. */
+    /**
+     * MenuItem to display info about this project.
+     */
     private final JMenuItem about;
 
-    /** Constructor to initialize fields. */
+    /**
+     * Constructor to initialize fields.
+     */
     public HelpMenu() {
 
-        myHelpMenu = new JMenu("Help");
+        super("Help");
 
         helpContents = new JMenuItem("Help Contents");
         about = new JMenuItem("About");
 
         setupHelpMenu();
-    }
-
-    /**
-     * Returns the help menu.
-     *
-     * @return the Options menu
-     */
-    public JMenu getHelpMenu() {
-
-        return myHelpMenu;
     }
 
     /**
@@ -84,8 +83,8 @@ public class HelpMenu {
         buildHelpContents();
         buildAbout();
 
-        myHelpMenu.add(helpContents);
-        myHelpMenu.add(about);
+        add(helpContents);
+        add(about);
     }
 }
 

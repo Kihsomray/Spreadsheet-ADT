@@ -71,24 +71,6 @@ public class SpreadSheet {
         }
     }
 
-    /**
-     * Gets a cell's formula.
-     * @param theRow The row of the cell.
-     * @param theColumn The column of the cell.
-     */
-    private String getCellFormula(final int theColumn, final int theRow) {
-        return myCells[theColumn][theRow].getFormula();
-    }
-
-    /**
-     * Prints a cell's formula
-     * @param theColumn The column of the cell.
-     * @param theRow The row of the cell.
-     */
-    public void printCellFormula(final int theColumn, final int theRow) {
-        System.out.println(getCellFormula(theColumn, theRow));
-    }
-
 
 
     /**
@@ -100,7 +82,7 @@ public class SpreadSheet {
     public Cell getCellAt(final int theColumn, final int theRow) {
         checkBounds(theColumn, theRow);
         // TODO null check
-        return myCells[theColumn][theRow];
+        return myCells[theRow][theColumn];
     }
 
 
@@ -110,7 +92,7 @@ public class SpreadSheet {
         }
     }
 
-    public String setFormula (String s) {
+    public String setFormula(String s) {
         //TODO bound checking
         myCurrentInput=s;
         System.out.println(myCurrentInput);
@@ -145,8 +127,11 @@ public class SpreadSheet {
 
         for (int col = 0; col < getMyColumns(); col++) {
             for (int row = 0; row < getMyRows(); row++) { //add string representation of cell into string.
-                if (getCellAt(col,row) != null) { //nulls are ignored.
-                    result.append(col +";" + row + ";" + getCellFormula(col,row) + ", ");
+                final Cell cell = getCellAt(col, row);
+
+                // nulls are ignored
+                if (cell != null) {
+                    result.append(col).append(";").append(row).append(";").append(cell.getFormula()).append(", ");
                 } //append cells to result
             }
         }

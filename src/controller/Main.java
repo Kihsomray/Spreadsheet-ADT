@@ -1,7 +1,7 @@
-import view.SpreadSheetGUI;
+package controller;
 
 /**
- * Main class of the entire program.
+ * controller.Main class of the entire program.
  *
  * @author Matt Bauchspies
  * @author Elroy O Mbabazi
@@ -12,13 +12,13 @@ import view.SpreadSheetGUI;
 public class Main {
 
     /**
-     * Main method of the program.
+     * controller.Main method of the program.
      *
      * @param theArgs system commands
      */
     public static void main(final String[] theArgs) {
 
-        new SpreadSheetGUI();
+        new SpreadSheetBuilder().build();
 
     }
 
