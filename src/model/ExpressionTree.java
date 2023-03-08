@@ -50,7 +50,9 @@ public class ExpressionTree {
      * @return Converted tree from stack
      */
     private Node constructTree(final Stack<Element> theStack, final Cell theCell) {
-        if (theStack.isEmpty()) throw new IndexOutOfBoundsException("Expression cannot be empty");
+        if (theStack.isEmpty()) throw new IndexOutOfBoundsException(
+                "THe entered expression is not a valid formula!"
+        );
 
         final Element element = theStack.pop();  // need to handle stack underflow
         //System.out.println(element);
@@ -93,8 +95,6 @@ public class ExpressionTree {
         // used to check if previous was a value (ignores parenthesis)
         boolean previousValue = false;
 
-        OperationElement previousOperator = null;
-
         while (index < theExpression.length()) {
 
             // eliminate whitespace
@@ -126,7 +126,7 @@ public class ExpressionTree {
                         returnStack.push(operator);
                     } else break;
                 }
-                previousOperator = operatorStack.push(new OperationElement(c));
+                operatorStack.push(new OperationElement(c));
                 index++;
 
                 if (c != '(') previousValue = false;
@@ -181,8 +181,7 @@ public class ExpressionTree {
 
                 previousValue = true;
 
-            } else throw new IllegalArgumentException("Invalid characters contained in formula, " +
-                    "the formula passed was:" + theExpression);
+            } else throw new IllegalArgumentException("Invalid characters contained in formula!");
 
         }
 

@@ -3,7 +3,9 @@ package view.table;
 import model.Cell;
 import model.SpreadSheet;
 
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
 /**
  * Custom table model for SSTable.
@@ -49,6 +51,8 @@ public class SSTableModel extends DefaultTableModel {
 
     @Override
     public void setValueAt(final Object theValue, final int theRow, final int theColumn) {
+
+        final Cell cell = mySpreadSheet.getCellAt(theRow, theColumn - 1);
         try {
             // first column is row column
             if (theColumn == 0) {
@@ -62,14 +66,29 @@ public class SSTableModel extends DefaultTableModel {
             mySpreadSheet.addCell(theValue.toString(), theRow, theColumn - 1);
 
             // update cell value in JTable
-            final Cell cell = mySpreadSheet.getCellAt(theRow, theColumn - 1);
             if (cell != null) {
                 super.setValueAt(cell.getCellValue(), theRow, theColumn);
             }
 
         } catch (Exception e) {
-            // TODO catch all exceptions
-            System.err.println("Error setting cell value: " + e.getMessage());
+
+            // creates JPanel to display
+            JPanel panel = new JPanel(new GridLayout(0, 1));
+
+            // rows label/field
+            panel.add(new JLabel(e.getMessage()));
+
+            // display the panel
+            JOptionPane.showConfirmDialog(
+                    null,
+                    panel,
+                    "Error!",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.PLAIN_MESSAGE
+            );
+
+            super.setValueAt(cell == null ? "" : cell.getCellValue(), theRow, theColumn);
+            //System.err.println("Error setting cell value: " + e.getMessage());
         }
     }
 
