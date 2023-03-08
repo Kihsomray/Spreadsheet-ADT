@@ -64,13 +64,14 @@ public class SpreadSheet {
      * @param theInput The String input for the formula provided.
      * @param theRow The Row we want to add the Cell at.
      * @param theColumn The Column we want to add the Cell at.
+     * @param updateGUI Should GUI update with the value.
      */
-    public void addCell(final String theInput, final int theRow, final int theColumn) {
+    public void addCell(final String theInput, final int theRow, final int theColumn, final boolean updateGUI) {
         if (checkBounds(theRow, theColumn)) {
             return;
         }
         if (myCells[theRow][theColumn] == null) {
-            myCells[theRow][theColumn] = new Cell(theInput, this, theRow, theColumn).initialize();
+            myCells[theRow][theColumn] = new Cell(theInput, this, theRow, theColumn).initialize(updateGUI);
         } else {
             myCells[theRow][theColumn].refreshCell(theInput);
         }

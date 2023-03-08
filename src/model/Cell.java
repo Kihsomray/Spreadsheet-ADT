@@ -66,11 +66,12 @@ public class Cell {
     /**
      * Initializes the cell object
      *
+     * @param updateGUI Should GUI update
      * @return reference to current cell
      */
-    public Cell initialize() {
+    public Cell initialize(final boolean updateGUI) {
         myExpressionTree = new ExpressionTree(myFormulaInput, this);
-        updateCellValue(false);
+        updateCellValue(updateGUI);
         return this;
     }
 

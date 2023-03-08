@@ -63,7 +63,7 @@ public class SSTableModel extends DefaultTableModel {
             super.setValueAt(theValue, theRow, theColumn);
 
             // adjusts the cell at this location
-            mySpreadSheet.addCell(theValue.toString(), theRow, theColumn - 1);
+            mySpreadSheet.addCell(theValue.toString(), theRow, theColumn - 1, false);
 
             // update cell value in JTable
             if (cell != null) {

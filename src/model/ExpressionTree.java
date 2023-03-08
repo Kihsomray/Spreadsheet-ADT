@@ -55,7 +55,7 @@ public class ExpressionTree {
         );
 
         final Element element = theStack.pop();  // need to handle stack underflow
-        System.out.println(element);
+        //System.out.println(element);
         if (element instanceof ValueElement) {
             if (element instanceof CellElement cellElement) {
                 try {

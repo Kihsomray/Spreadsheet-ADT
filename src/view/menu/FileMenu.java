@@ -89,14 +89,14 @@ public class FileMenu extends JMenu {
                 int colSize = Integer.parseInt(fileData[1]); //retrieve col and row size
 
                 //initialize new spreadsheet
-                SpreadSheet ss = new SpreadSheet(new SpreadSheetBuilder(colSize,rowSize),colSize,rowSize);
+                SpreadSheet ss = new SpreadSheet(new SpreadSheetBuilder(rowSize, colSize), rowSize, colSize);
 
                 for (int i = 2; i < fileData.length; i++) {
                     String[] elements = (fileData[i].split(";")); //split the string representation up again, based on the elements of the cell.
                     int row = Integer.parseInt(elements[0]); //first element is row
                     int column = Integer.parseInt(elements[1]); //second is col
                     String input = elements[2]; //third is the actual input of the cell.
-                    ss.addCell(input, row, column);
+                    ss.addCell(input, row, column, true);
                 }
                 myFrame = new SSFrame(ss);
             }
