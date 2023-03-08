@@ -84,13 +84,14 @@ public class ExpressionTree {
      */
     private Stack<Element> expressionPostfix(String theExpression) {
 
-        // TODO is this okay to do??? (eg. 1 1 - 6 = 5)
-        theExpression = theExpression.replace(" ", "");
-
         Stack<OperationElement> operatorStack = new Stack<>();
         Stack<Element> returnStack = new Stack<>();
 
+        // index value
         int index = 0;
+
+        // used to check if previous was a value (ignores parenthesis)
+        boolean previousValue = false;
 
         while (index < theExpression.length()) {
 
@@ -121,6 +122,8 @@ public class ExpressionTree {
                 operatorStack.push(new OperationElement(c));
                 index++;
 
+                if (c != '(') previousValue = false;
+
             } else if (c == ')') {
                 OperationElement operator;
                 operator = operatorStack.pop();
@@ -136,6 +139,11 @@ public class ExpressionTree {
                 index++;
 
             } else if (Character.isDigit(c)) {
+
+                if (previousValue) throw new ArithmeticException(
+                        "You cannot have two values without an operator between."
+                );
+
                 // We found a literal token
                 int literal = c - '0';
                 index++;
@@ -151,12 +159,20 @@ public class ExpressionTree {
                 // place the literal on the output stack
                 returnStack.push(new LiteralElement(literal));
 
+                previousValue = true;
+
             } else if (Character.isAlphabetic(c)) {
+
+                if (previousValue) throw new ArithmeticException(
+                        "You cannot have two values without an operator between."
+                );
 
                 // We found a cell reference token
                 CellElement cell = new CellElement(myCell.getSpreadSheet());
                 index = CellElement.applyValues(theExpression, index, cell);
                 returnStack.push(cell);
+
+                previousValue = true;
 
             } else throw new IllegalArgumentException("Invalid characters contained in formula, " +
                     "the formula passed was:" + theExpression);
