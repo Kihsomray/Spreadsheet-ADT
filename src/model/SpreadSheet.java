@@ -128,11 +128,11 @@ public class SpreadSheet {
 
         for (int col = 0; col < getMyColumns(); col++) {
             for (int row = 0; row < getMyRows(); row++) { //add string representation of cell into string.
-                final Cell cell = getCellAt(row, col);
+                final Cell cell = getCellAt(col, row);
 
                 // nulls are ignored
                 if (cell != null) {
-                    result.append(col).append(";").append(row).append(";").append(cell.getFormula()).append(", ");
+                    result.append(row).append(";").append(col).append(";").append(cell.getFormula()).append(", ");
                 } //append cells to result
             }
         }
@@ -164,15 +164,15 @@ public class SpreadSheet {
             inputFile.close();
 
             clearCells();
-            setMyColumns(Integer.parseInt(cells[0])); //spot 0 contains col
-            setMyRows(Integer.parseInt(cells[1])); //spo1 contains row
+            setMyRows(Integer.parseInt(cells[0])); //spot 0 contains row
+            setMyColumns(Integer.parseInt(cells[1])); //spo1 contains col
 
             for (int i = 2; i < cells.length; i++) {
                 String[] elements = (cells[i].split(";")); //split the string representation up again, based on the elements of the cell.
-                int column = Integer.parseInt(elements[0]); //first element is col
-                int row = Integer.parseInt(elements[1]); //second is row
+                int row = Integer.parseInt(elements[0]); //first element is row
+                int column = Integer.parseInt(elements[1]); //second is col
                 String input = elements[2]; //third is the actual input of the cell.
-                addCell(input, column, row);
+                addCell(input, row, column);
             }
 
         } catch (Exception e) {
@@ -186,7 +186,7 @@ public class SpreadSheet {
     public void clearCells(){
         for (int col = 0; col < getMyColumns(); col++) {
             for (int row = 0; row < getMyRows(); row++) {
-                myCells[col][row] = null;
+                myCells[row][col] = null;
             }
         }
     }
@@ -198,8 +198,8 @@ public class SpreadSheet {
         for (int col = 0; col < myColumns; col++) {
             System.out.println();
             for (int row = 0; row < myRows; row++) {
-                if (myCells[col][row] != null) {
-                    System.out.println(myCells[col][row].getFormula());
+                if (myCells[row][col] != null) {
+                    System.out.println(myCells[row][col].getFormula());
                 } else {
                     System.out.println("null");
                 }

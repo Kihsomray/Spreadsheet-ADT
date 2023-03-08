@@ -1,5 +1,7 @@
 package view.menu;
 
+import view.SSFrame;
+
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
@@ -15,7 +17,7 @@ public class FileMenu extends JMenu {
     /**
      * JFrame containing spreadsheet application.
      */
-    private final JFrame myFrame;
+    private final SSFrame myFrame;
 
     /**
      * MenuItem to open a file in the spreadsheet.
@@ -37,7 +39,7 @@ public class FileMenu extends JMenu {
      *
      * @param theFrame the current JFrame
      */
-    public FileMenu(final JFrame theFrame) {
+    public FileMenu(final SSFrame theFrame) {
 
         super("File");
 
@@ -66,7 +68,7 @@ public class FileMenu extends JMenu {
     }
 
     /**
-     * Adds ActionListener to openFile menu item.
+     * Adds ActionListener to openFile menu item. (WIP)
      */
     private void buildOpenFile() {
 
@@ -74,20 +76,29 @@ public class FileMenu extends JMenu {
         openFile.setMnemonic(KeyEvent.VK_O);
         openFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
         openFile.addActionListener(theEvent -> {
-            // code here
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showSaveDialog(null);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                String file = String.valueOf((fileChooser.getSelectedFile()));
+                myFrame.getMySpreadSheet().loadSheet(file);
+            }
         });
     }
-
     /**
      * Adds ActionListener to saveFile menu item.
      */
     private void buildSaveFile() {
-
         saveFile.setEnabled(true);
         saveFile.setMnemonic(KeyEvent.VK_S);
         saveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
         saveFile.addActionListener(theEvent -> {
-            // code here
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showSaveDialog(null);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                String file = String.valueOf((fileChooser.getSelectedFile()));
+                myFrame.getMySpreadSheet().saveSheet(file);
+                JOptionPane.showMessageDialog(null, "File saved as : " + file);
+            }
         });
     }
 
