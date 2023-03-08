@@ -38,7 +38,7 @@ public class ExpressionTree {
         myCell = theCell;
         myHeaderNode = constructTree(expressionPostfix(theExpression), theCell);
         if (myCell.checkCycle()) {
-            throw new IllegalArgumentException("This is a cycle");
+            throw new IllegalArgumentException("Setting this value will result in a cycle!");
         }
     }
 

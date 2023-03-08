@@ -69,11 +69,30 @@ public class SpreadSheetBuilder {
                 JOptionPane.PLAIN_MESSAGE
         );
 
-        // TODO add non-integer parsing catching
         if (result == JOptionPane.OK_OPTION) {
-            final int rows = Integer.parseInt(rowsField.getText());
-            final int columns = Integer.parseInt(columnsField.getText());
-            return new SpreadSheet(this, rows, columns);
+            try {
+                final int rows = Integer.parseInt(rowsField.getText());
+                final int columns = Integer.parseInt(columnsField.getText());
+                return new SpreadSheet(this, rows, columns);
+            } catch (NumberFormatException e) {
+                // creates JPanel to display
+                JPanel errorPanel = new JPanel(new GridLayout(0, 1));
+
+                // rows label/field
+                errorPanel.add(new JLabel("Invalid row/column entry!"));
+
+                // display the panel
+                JOptionPane.showConfirmDialog(
+                        null,
+                        errorPanel,
+                        "Error!",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.PLAIN_MESSAGE
+                );
+
+                System.exit(0);
+                return null;
+            }
         } else {
 
             // If they decided to quit

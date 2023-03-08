@@ -138,7 +138,9 @@ public class SSFrame extends JFrame {
                         } else {
                             String formula = mySpreadSheet.getCellAt(row, col - 1).getFormula();
                             if (formula != null && !formula.isEmpty()) {
-                                ((SSTableModel) myTable.getModel()).setGUIValue(formula, row, col); // need fixing
+                                // need fixing <-- add checker to display only when editing cell!
+                                // table.isEditing or whatever doesn't work right
+                                ((SSTableModel) myTable.getModel()).setGUIValue(formula, row, col);
                                 textField.setText(formula);
                             }
                         }
