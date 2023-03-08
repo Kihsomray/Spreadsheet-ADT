@@ -59,7 +59,9 @@ public class SpreadSheet {
      * @param theRow The Row we want to add the Cell at.
      */
     public void addCell(final String theInput, final int theColumn, final int theRow) {
-        checkBounds(theColumn, theRow);
+        if (invalidBounds(theColumn, theRow)) {
+            return;
+        }
         if (myCells[theColumn][theRow] == null) {
             myCells[theColumn][theRow] = new Cell(theInput, this).initialize();
         } else {
@@ -94,16 +96,19 @@ public class SpreadSheet {
      * @return The Cell contained at SpreadSheet[theColumn][theRow]
      */
     public Cell getCellAt(final int theColumn, final int theRow) {
-        checkBounds(theColumn, theRow);
+        if (invalidBounds(theColumn, theRow)){
+            return null;
+        }
         // TODO null check
         return myCells[theColumn][theRow];
     }
 
 
-    private void checkBounds(final int theCol, final int theRow) {
+    private boolean invalidBounds(final int theCol, final int theRow) {
         if (theRow < 0 || theCol >= myColumns || theCol < 0 || theRow >= myRows) {
-            throw new IllegalArgumentException("Invalid cell index.");
+            return true;
         }
+        return false;
     }
 
     public String setFormula (String s) {

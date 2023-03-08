@@ -33,7 +33,7 @@ public class SpreadSheetGUI {
     /**
      * The width of the column of row numbers in pixels.
      */
-    public static final int WIDTH = 30;
+    public static final int WIDTH = 40;
 
 
     public SpreadSheetGUI() {
@@ -126,7 +126,7 @@ public class SpreadSheetGUI {
         if (result == JOptionPane.OK_OPTION) {
             int rows = Integer.parseInt(rowsField.getText());
             int columns = Integer.parseInt(columnsField.getText());
-            mySpreadSheet = new SpreadSheet(columns, rows);
+            mySpreadSheet = new SpreadSheet(rows, columns);
         } else {
             System.exit(0);
         }
@@ -216,9 +216,6 @@ public class SpreadSheetGUI {
         String columnTitle = "";
         int test = theColumn;
         char value;
-        if (theColumn == 0) {
-            return columnTitle + 'A';
-        }
         while (test > 0) {
             test--;
             int lowestValue = test%26;
