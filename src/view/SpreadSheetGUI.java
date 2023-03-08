@@ -4,12 +4,9 @@ import model.Cell;
 import model.SpreadSheet;
 
 import javax.swing.*;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,7 +19,6 @@ public class SpreadSheetGUI {
 
     public JFrame myFrame;
 
-    private Menu myMenu;
     private JTextField textField;
 
     private JButton insertButton;
@@ -32,7 +28,9 @@ public class SpreadSheetGUI {
     private JPanel insertPanel;
 
 
-    /** The width of the column of row numbers in pixels. */
+    /**
+     * The width of the column of row numbers in pixels.
+     */
     public static final int WIDTH = 30;
 
 
@@ -41,7 +39,6 @@ public class SpreadSheetGUI {
         textField = new JTextField(50);
         insertPanel= new JPanel(new FlowLayout());
         promptUserForDimensions();
-        initializeSpreadSheet();
         insertPanel();
         createTable();
         createFrame();
@@ -51,11 +48,7 @@ public class SpreadSheetGUI {
     private void insertPanel() {
         insertPanel.add(textField);
         insertButton = new JButton("Insert");
-        insertButton.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent theEvent) {
-                insertData();
-            }
-        });
+        insertButton.addActionListener(theEvent -> insertData());
         insertPanel.add(insertButton);
 
     }
@@ -79,15 +72,12 @@ public class SpreadSheetGUI {
     private void addMenu() {
         JMenu formulaMenu = new JMenu("Formula");
         JMenuItem getFormulaItem = new JMenuItem("Get Formula");
-        getFormulaItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = myTable.getSelectedRow();
-                int col = myTable.getSelectedColumn();
-                if (row != -1 && col != -1) {
-                    String formula = mySpreadSheet.getCellAt(col-1, row).getFormula();
-                    textField.setText(formula);
-                }
+        getFormulaItem.addActionListener(e -> {
+            int row = myTable.getSelectedRow();
+            int col = myTable.getSelectedColumn();
+            if (row != -1 && col != -1) {
+                String formula = mySpreadSheet.getCellAt(col-1, row).getFormula();
+                textField.setText(formula);
             }
         });
         formulaMenu.add(getFormulaItem);
@@ -142,15 +132,15 @@ public class SpreadSheetGUI {
                     if (column == 0) {
                         return;
                     }
-                    super.setValueAt(value, row, column - 1);
-                    mySpreadSheet.addCell(value.toString(), column - 1, row);
+                    super.setValueAt(value, row, column-1); // changed off by 1
+                    mySpreadSheet.addCell(value.toString(), column-1, row);
                     Cell cell = mySpreadSheet.getCellAt(column - 1, row);
                     if (cell != null) {
-                        System.out.println("this is the row");
-                        System.out.println(row);
-                        System.out.println("this is the column");
-                        System.out.println(column);
-                        super.setValueAt(cell.getCellValue(), row, column - 1); // update cell value in JTable
+//                        System.out.println("this is the row");
+//                        System.out.println(row);
+//                        System.out.println("this is the column");
+//                        System.out.println(column);
+                        super.setValueAt(cell.getCellValue(), row, column-1); // update cell value in JTable
                     }
                 } catch (Exception e) {
                     System.err.println("Error setting cell value: " + e.getMessage());
@@ -167,7 +157,7 @@ public class SpreadSheetGUI {
                 if (column == 0) {
                     return Integer.class;
                 }
-                return super.getColumnClass(column - 1);
+                return super.getColumnClass(column );
             }
 
         };
@@ -178,46 +168,41 @@ public class SpreadSheetGUI {
                 setBackground(new Color(219, 216, 216)); // set background color of column 0
             }
         });
-        myTable.getModel().addTableModelListener(new TableModelListener() {
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                // TODO Auto-generated method stub
-                int row = e.getFirstRow();
-                int column = e.getColumn();
-                TableModel model = (TableModel) e.getSource();
-                Object value = model.getValueAt(row, column);
-            }
-        });
-        // set column labels to begin from column 2
+
+        // set column labels
         TableColumnModel columnModel = myTable.getColumnModel();
-        for (int i = 0; i < columnModel.getColumnCount(); i++) {
-            if (i == 0) {
-                columnModel.getColumn(i).setHeaderValue("");
-            } else if (i == 1) {
-                columnModel.getColumn(i).setHeaderValue("A");
-            } else {
-                String[] columnNames = new String[mySpreadSheet.getMyColumns()];
-                for (int j = 0; j < mySpreadSheet.getMyColumns(); j++) {
-                    columnNames[j] = Character.toString((char) (j + 65));
-                }
-            }
+        columnModel.getColumn(0).setHeaderValue("");
+        for (int i = 1; i < columnModel.getColumnCount(); i++) {
+            columnModel.getColumn(i).setHeaderValue(columnHeaderCalc(i));
         }
         myTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         myTable.getColumnModel().getColumn(0).setPreferredWidth(WIDTH);
         myTable.getTableHeader().setReorderingAllowed(false);
     }
-    /**
-     * Initializes the cells in the spreadsheet with empty values.
-     *
-     */
-    private void initializeSpreadSheet() {
-    }
+
     /** Adds the menuBar to the Frame*/
     private void addMenuBar() {
         myMenuBar.add(new FileMenu(myFrame).getFileMenu());
         myMenuBar.add(new OptionsMenu(myFrame,mySpreadSheet,myTable).getOptionsMenu());
         myMenuBar.add(new HelpMenu().getHelpMenu());
         myFrame.setJMenuBar(myMenuBar);
+    }
+
+    private String columnHeaderCalc(final int theColumn) {
+        String columnTitle = "";
+        int test = theColumn;
+        char value;
+        if (theColumn == 0) {
+            return columnTitle + 'A';
+        }
+        while (test > 0) {
+            test--;
+            int lowestValue = test%26;
+            value = (char) (lowestValue + 65);
+            columnTitle = value + columnTitle;
+            test /= 26;
+        }
+        return columnTitle;
     }
 
     /**

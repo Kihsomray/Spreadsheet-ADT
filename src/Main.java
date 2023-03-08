@@ -17,7 +17,6 @@ public class Main {
      * @param theArgs system commands
      */
     public static void main(final String[] theArgs) {
-
         new SpreadSheetGUI();
 
     }

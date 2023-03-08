@@ -33,10 +33,6 @@ public class SpreadSheet {
      */
     private int myRows;
 
-    /**
-     * Static definition of "base" for columns based on English alphabet.
-     */
-    public static final int NUM_LETTERS = 26;
 
     private String myCurrentInput; // most recent input into GUI
 
