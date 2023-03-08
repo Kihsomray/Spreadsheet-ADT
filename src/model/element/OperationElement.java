@@ -89,9 +89,9 @@ public class OperationElement implements Element {
      * Enums to define different operations and their priority of execution.
      */
     public enum Operation {
-        EXPONENT('^', 3),
-        LEFT_PARENTHESIS('(', 2), // Redundant?
-        RIGHT_PARENTHESIS(')', 2),
+        LEFT_PARENTHESIS('(', 3), // Redundant?
+        RIGHT_PARENTHESIS(')', 3),
+        EXPONENT('^', 2),
         MULTIPLICATION('*', 1),
         DIVISION('/', 1),
         MODULUS('%', 1),

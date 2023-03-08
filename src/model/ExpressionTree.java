@@ -119,7 +119,7 @@ public class ExpressionTree {
 
             char c = theExpression.charAt(index);
 
-            if ((returnStack.isEmpty() && c == '-') || (previousOperation != null && previousOperation.getPriority() <= 1 && c == '-')) {
+            if ((returnStack.isEmpty() && c == '-') || (previousOperation != null && previousOperation.getPriority() <= 2 && c == '-')) {
 
                 int previous = index++;
                 while (index < theExpression.length()) {
