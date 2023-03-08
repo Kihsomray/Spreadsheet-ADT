@@ -14,6 +14,11 @@ public class SpreadSheetBuilder {
     private final SpreadSheet mySpreadSheet;
 
     /**
+     * SpreadSheet frame for model access.
+     */
+    private SSFrame mySpreadSheetFrame;
+
+    /**
      * Default SpreadSheetBuilder. Will prompt the
      * user for initial dimensions of the frame.
      */
@@ -29,11 +34,11 @@ public class SpreadSheetBuilder {
      * @param theColumns Number of columns in spreadsheet
      */
     public SpreadSheetBuilder(final int theRows, final int theColumns) {
-        mySpreadSheet = new SpreadSheet(theColumns, theRows);
+        mySpreadSheet = new SpreadSheet(this, theColumns, theRows);
     }
 
     public SSFrame build() {
-        return new SSFrame(mySpreadSheet);
+        return mySpreadSheetFrame = new SSFrame(mySpreadSheet);
     }
 
     /**
@@ -68,7 +73,7 @@ public class SpreadSheetBuilder {
         if (result == JOptionPane.OK_OPTION) {
             final int rows = Integer.parseInt(rowsField.getText());
             final int columns = Integer.parseInt(columnsField.getText());
-            return new SpreadSheet(rows, columns);
+            return new SpreadSheet(this, rows, columns);
         } else {
 
             // If they decided to quit
@@ -77,5 +82,13 @@ public class SpreadSheetBuilder {
         }
     }
 
+    /**
+     * Gets SpreadSheet JFrame instance.
+     *
+     * @return SpreadSheet JFrame instance
+     */
+    public SSFrame getMySpreadSheetFrame() {
+        return mySpreadSheetFrame;
+    }
 
 }

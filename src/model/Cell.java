@@ -1,5 +1,7 @@
 package model;
 
+import view.table.SSTableModel;
+
 import java.util.LinkedList;
 import java.util.Objects;
 
@@ -18,6 +20,16 @@ public class Cell {
      * The integer value of the cell.
      */
     private int myCellValue;
+
+    /**
+     * Row location of this cell.
+     */
+    private final int myRow;
+
+    /**
+     * Column location of this cell.
+     */
+    private final int myColumn;
 
     /**
      * The expression tree that defines the cell's value.
@@ -44,9 +56,11 @@ public class Cell {
      *
      * @param theInput the expression stored in the cell.
      */
-    Cell(final String theInput, final SpreadSheet theSpreadSheet) {
+    Cell(final String theInput, final SpreadSheet theSpreadSheet, final int theRow, final int theColumn) {
         myFormulaInput = theInput;
         mySpreadSheet = theSpreadSheet;
+        myRow = theRow;
+        myColumn = theColumn;
     }
 
     /**
@@ -56,7 +70,7 @@ public class Cell {
      */
     public Cell initialize() {
         myExpressionTree = new ExpressionTree(myFormulaInput, this);
-        updateCellValue();
+        updateCellValue(false);
         return this;
     }
 
@@ -65,11 +79,11 @@ public class Cell {
      *
      * @param theInput The String input from the table.
      */
-    void refreshCell(final String theInput, final Cell theCell) {
+    void refreshCell(final String theInput) {
         if (!Objects.equals(theInput, myFormulaInput)) {
             myExpressionTree = new ExpressionTree(theInput, this);
             myFormulaInput = theInput;
-            updateCellValue();
+            updateCellValue(false);
             updateDependents();
         }
     }
@@ -87,7 +101,8 @@ public class Cell {
      */
     void updateDependents(){
         for (Cell c : myDependents) {
-            c.updateCellValue();
+            c.updateCellValue(true);
+            c.updateDependents();
         }
     }
 
@@ -118,9 +133,18 @@ public class Cell {
     /**
      * Helper method to update the value of the cell.
      * Calls updateDependents to also update any necessary dependencies after this.
+     *
+     * @param updateGUI Should GUI update with myCellValue
      */
-    private void updateCellValue() {
+    private void updateCellValue(boolean updateGUI) {
         myCellValue = myExpressionTree.calculate();
+        if (updateGUI) {
+            ((SSTableModel) mySpreadSheet
+                    .getSpreadSheetFrame()
+                    .getTable()
+                    .getModel())
+                    .setGUIValue(String.valueOf(myCellValue), myRow, myColumn + 1);
+        }
     }
 
 

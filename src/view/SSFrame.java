@@ -26,12 +26,12 @@ public class SSFrame extends JFrame {
     /**
      * Spreadsheet attached to this GUI.
      */
-    public final SpreadSheet mySpreadSheet;
+    private final SpreadSheet mySpreadSheet;
 
     /**
      * Table attached to this frame.
      */
-    public SSTable myTable;
+    private final SSTable myTable;
 
     /**
      * Insert text field (paired with insert button).
@@ -41,7 +41,7 @@ public class SSFrame extends JFrame {
     /**
      * Menu bar attached to this frame.
      */
-    public JMenuBar myMenuBar;
+    private final JMenuBar myMenuBar;
 
     /**
      * Insert panel at top of frame.
@@ -138,7 +138,7 @@ public class SSFrame extends JFrame {
                         } else {
                             String formula = mySpreadSheet.getCellAt(row, col - 1).getFormula();
                             if (formula != null && !formula.isEmpty()) {
-                                ((SSTableModel) myTable.getModel()).setGUIValue(formula, row, col);
+                                ((SSTableModel) myTable.getModel()).setGUIValue(formula, row, col); // need fixing
                                 textField.setText(formula);
                             }
                         }

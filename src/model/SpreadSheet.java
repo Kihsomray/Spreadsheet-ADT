@@ -1,5 +1,8 @@
 package model;
 
+import controller.SpreadSheetBuilder;
+import view.SSFrame;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -18,10 +21,14 @@ import java.io.IOException;
 public class SpreadSheet {
 
     /**
+     * Reference to the SpreadSheet builder.
+     */
+    private final SpreadSheetBuilder mySpreadSheetBuilder;
+
+    /**
      * The underlying 2D Array of the SpreadSheet, contains Cells.
      */
     private Cell[][] myCells;
-
 
     /**
      * The total columns of the SpreadSheet.
@@ -33,11 +40,6 @@ public class SpreadSheet {
      */
     private int myRows;
 
-    /**
-     * Static definition of "base" for columns based on English alphabet.
-     */
-    public static final int NUM_LETTERS = 26;
-
     private String myCurrentInput; // most recent input into GUI
 
     /**
@@ -45,10 +47,11 @@ public class SpreadSheet {
      * @param theRows The initial Rows in the SpreadSheet.
      * @param theColumns The initial Columns in the SpreadSheet.
      */
-    public SpreadSheet(final int theRows, final int theColumns) {
+    public SpreadSheet(final SpreadSheetBuilder theSpreadSheetBuilder, final int theRows, final int theColumns) {
         if (theColumns <= 0 || theRows <= 0) {
             throw new IllegalArgumentException("SpreadSheet dimensions must be positive.");
         }
+        mySpreadSheetBuilder = theSpreadSheetBuilder;
         myCells = new Cell[theRows][theColumns];
         myRows = theRows;
         myColumns = theColumns;
@@ -67,9 +70,9 @@ public class SpreadSheet {
             return;
         }
         if (myCells[theRow][theColumn] == null) {
-            myCells[theRow][theColumn] = new Cell(theInput, this).initialize();
+            myCells[theRow][theColumn] = new Cell(theInput, this, theRow, theColumn).initialize();
         } else {
-            myCells[theRow][theColumn].refreshCell(theInput, myCells[theRow][theColumn]);
+            myCells[theRow][theColumn].refreshCell(theInput);
         }
     }
 
@@ -203,4 +206,14 @@ public class SpreadSheet {
             }
         }
     }
+
+    /**
+     * Gets SpreadSheet JFrame instance.
+     *
+     * @return SpreadSheet JFrame instance
+     */
+    public SSFrame getSpreadSheetFrame() {
+        return mySpreadSheetBuilder.getMySpreadSheetFrame();
+    }
+
 }

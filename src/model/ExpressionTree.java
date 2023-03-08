@@ -53,9 +53,9 @@ public class ExpressionTree {
         if (theStack.isEmpty()) throw new IndexOutOfBoundsException("Expression cannot be empty");
 
         final Element element = theStack.pop();  // need to handle stack underflow
+        //System.out.println(element);
         if (element instanceof ValueElement) {
             if (element instanceof CellElement cellElement) {
-                System.out.println(cellElement);
                 cellElement.getCell().addDependency(theCell);
             }
             // Literals and Cells are leaves in the expression tree
@@ -119,6 +119,7 @@ public class ExpressionTree {
                         returnStack.push(operator);
                     } else break;
                 }
+                operatorStack.push(new OperationElement(c));
                 index++;
 
                 if (c != '(') previousValue = false;
