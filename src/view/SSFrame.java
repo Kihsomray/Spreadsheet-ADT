@@ -10,6 +10,8 @@ import view.table.SSTableModel;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * SpreadSheet frame containing main contents of GUI.
@@ -110,19 +112,38 @@ public class SSFrame extends JFrame {
      * Adds the formula menu.
      */
     private void addFormulaMenu() {
-        JMenu formulaMenu = new JMenu("Formula");
-        JMenuItem getFormulaItem = new JMenuItem("Get Formula");
-        getFormulaItem.addActionListener(e -> {
-            final int row = myTable.getSelectedRow();
-            final int column = myTable.getSelectedColumn();
-            if (row != -1 && column != -1) {
-                String formula = mySpreadSheet.getCellAt(row, column - 1).getFormula();
-                textField.setText(formula);
-            }
-        });
-        formulaMenu.add(getFormulaItem);
-        myMenuBar.add(formulaMenu);
-    }
+
+            JMenu formulaMenu = new JMenu("Formula");
+            JMenuItem getFormulaItem = new JMenuItem("Get Formula");
+            getFormulaItem.addActionListener(e -> {
+                int row = myTable.getSelectedRow();
+                int col = myTable.getSelectedColumn();
+                if (row != -1 && col != -1) {
+                    String formula = mySpreadSheet.getCellAt(col-1, row).getFormula();
+                    textField.setText(formula);
+                }
+            });
+            formulaMenu.add(getFormulaItem);
+
+            // Add mouse clicked event to the cells in the JTable
+            myTable.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent evt) {
+                    int row = myTable.rowAtPoint(evt.getPoint());
+                    int col = myTable.columnAtPoint(evt.getPoint());
+                    if (row != -1 && col != -1) {
+                        if (mySpreadSheet.getCellAt(row, col - 1) == null) {
+                            textField.setText("");
+                        } else {
+                            String formula = mySpreadSheet.getCellAt(row, col - 1).getFormula();
+                            if (formula != null && !formula.isEmpty()) {
+                                textField.setText(formula);
+                            }
+                        }
+                    }
+                }
+            });
+            myMenuBar.add(formulaMenu);
+        }
 
     /**
      * Adds the menu bar to the Frame.

@@ -3,7 +3,6 @@ package view.table;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
 
 import static view.SSFrame.ROW_COLUMN_WIDTH;
@@ -27,14 +26,6 @@ public class SSTable extends JTable {
             setBackground(new Color(219, 216, 216));
 
         }});
-
-        getModel().addTableModelListener(e -> {
-            // TODO Auto-generated method stub
-            int row = e.getFirstRow();
-            int column = e.getColumn();
-            TableModel model = (TableModel) e.getSource();
-            Object value = model.getValueAt(row, column);
-        });
 
         // column header values
         final TableColumnModel columnModel = getColumnModel();
