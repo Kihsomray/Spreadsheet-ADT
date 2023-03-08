@@ -93,6 +93,8 @@ public class ExpressionTree {
         // used to check if previous was a value (ignores parenthesis)
         boolean previousValue = false;
 
+        OperationElement previousOperator = null;
+
         while (index < theExpression.length()) {
 
             // eliminate whitespace
@@ -104,6 +106,11 @@ public class ExpressionTree {
             if (index == theExpression.length()) break;
 
             char c = theExpression.charAt(index);
+
+            if (returnStack.isEmpty() && c == '-') {
+                c = '0';
+                index--;
+            }
 
             // ASSERT: ch now contains the first character of the next token.
             if (OperationElement.OPERATORS.contains(c) && c != ')') {
@@ -119,7 +126,7 @@ public class ExpressionTree {
                         returnStack.push(operator);
                     } else break;
                 }
-                operatorStack.push(new OperationElement(c));
+                previousOperator = operatorStack.push(new OperationElement(c));
                 index++;
 
                 if (c != '(') previousValue = false;
