@@ -58,7 +58,13 @@ public class ExpressionTree {
         //System.out.println(element);
         if (element instanceof ValueElement) {
             if (element instanceof CellElement cellElement) {
-                cellElement.getCell().addDependency(theCell);
+                try {
+                    cellElement.getCell().addDependency(theCell);
+                } catch (NullPointerException e) {
+                    throw new IllegalArgumentException(
+                            "Only a reference to a non-empty cell can be made!"
+                    );
+                }
             }
             // Literals and Cells are leaves in the expression tree
             return new Node(element);
