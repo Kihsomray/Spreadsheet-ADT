@@ -128,7 +128,7 @@ public class SpreadSheet {
 
         for (int col = 0; col < getMyColumns(); col++) {
             for (int row = 0; row < getMyRows(); row++) { //add string representation of cell into string.
-                final Cell cell = getCellAt(col, row);
+                final Cell cell = getCellAt(row, col);
 
                 // nulls are ignored
                 if (cell != null) {
@@ -152,28 +152,18 @@ public class SpreadSheet {
      *
      * @param theFileName the text file that holds the data for the spreadsheet.
      */
-    public void loadSheet(String theFileName) {
+    public String[] loadSheet(String theFileName) {
         try {
             FileReader inputFile = new FileReader(theFileName);
             BufferedReader reader = new BufferedReader(inputFile);
 
-            //seperate elements of text file by comma
+            //separate elements of text file by comma
             String[] cells = (reader.readLine().split(", "));
 
             reader.close();
             inputFile.close();
 
-            clearCells();
-            setMyRows(Integer.parseInt(cells[0])); //spot 0 contains row
-            setMyColumns(Integer.parseInt(cells[1])); //spo1 contains col
-
-            for (int i = 2; i < cells.length; i++) {
-                String[] elements = (cells[i].split(";")); //split the string representation up again, based on the elements of the cell.
-                int row = Integer.parseInt(elements[0]); //first element is row
-                int column = Integer.parseInt(elements[1]); //second is col
-                String input = elements[2]; //third is the actual input of the cell.
-                addCell(input, row, column);
-            }
+            return cells;
 
         } catch (Exception e) {
             throw new RuntimeException(e);
