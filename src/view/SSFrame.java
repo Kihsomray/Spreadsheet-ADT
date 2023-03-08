@@ -31,7 +31,7 @@ public class SSFrame extends JFrame {
     /**
      * Table attached to this frame.
      */
-    public JTable myTable;
+    public SSTable myTable;
 
     /**
      * Insert text field (paired with insert button).
@@ -116,14 +116,16 @@ public class SSFrame extends JFrame {
             JMenu formulaMenu = new JMenu("Formula");
             JMenuItem getFormulaItem = new JMenuItem("Get Formula");
             getFormulaItem.addActionListener(e -> {
-                int row = myTable.getSelectedRow();
-                int col = myTable.getSelectedColumn();
+                final int row = myTable.getSelectedRow();
+                final int col = myTable.getSelectedColumn();
                 if (row != -1 && col != -1) {
-                    String formula = mySpreadSheet.getCellAt(col-1, row).getFormula();
+                    String formula = mySpreadSheet.getCellAt(row, col - 1).getFormula();
                     textField.setText(formula);
                 }
             });
             formulaMenu.add(getFormulaItem);
+
+
 
             // Add mouse clicked event to the cells in the JTable
             myTable.addMouseListener(new MouseAdapter() {
@@ -136,6 +138,7 @@ public class SSFrame extends JFrame {
                         } else {
                             String formula = mySpreadSheet.getCellAt(row, col - 1).getFormula();
                             if (formula != null && !formula.isEmpty()) {
+                                ((SSTableModel) myTable.getModel()).setGUIValue(formula, row, col);
                                 textField.setText(formula);
                             }
                         }

@@ -113,13 +113,12 @@ public class ExpressionTree {
                 // lower priority than the current one.
                 OperationElement operator;
                 while (!operatorStack.isEmpty()) {
-                    operator =  operatorStack.peek();
+                    operator = operatorStack.peek();
                     if (operator.getPriority() >= OperationElement.getPriority(c) && operator.getOperator() != '(') {
                         operatorStack.pop();
                         returnStack.push(operator);
                     } else break;
                 }
-                operatorStack.push(new OperationElement(c));
                 index++;
 
                 if (c != '(') previousValue = false;

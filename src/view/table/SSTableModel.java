@@ -28,6 +28,17 @@ public class SSTableModel extends DefaultTableModel {
         mySpreadSheet = theSpreadSheet;
     }
 
+    /**
+     * Sets the GUI value without updating cell.
+     *
+     * @param theValue Value to set cell to
+     * @param theRow Row index
+     * @param theColumn Column index
+     */
+    public void setGUIValue(final String theValue, final int theRow, final int theColumn) {
+        super.setValueAt(theValue, theRow, theColumn);
+    }
+
     @Override
     public Object getValueAt(int theRow, int theColumn) {
         if (theColumn == 0) {
