@@ -58,20 +58,20 @@ public class OperationElement implements Element {
     }
 
     /**
-     * Evaluates the expression (val1 & val2).
+     * Evaluates the expression (theFirstVal & theSecondVal).
      *
-     * @param val1 Value 1
-     * @param val2 Value 2
+     * @param theFirstVal Value 1
+     * @param theSecondVal Value 2
      * @return Completed evaluation
      */
-    public int evaluate(int val1, int val2) {
+    public int evaluate(int theFirstVal, int theSecondVal) {
         return switch (myOperation) {
-            case EXPONENT -> (int) Math.pow(val2, val1);
-            case ADDITION -> val2 + val1;
-            case SUBTRACTION -> val2 - val1;
-            case MULTIPLICATION -> val2 * val1;
-            case DIVISION -> val2 / val1;
-            case MODULUS -> val2 % val1;
+            case EXPONENT -> (int) Math.pow(theSecondVal, theFirstVal);
+            case ADDITION -> theSecondVal + theFirstVal;
+            case SUBTRACTION -> theSecondVal - theFirstVal;
+            case MULTIPLICATION -> theSecondVal * theFirstVal;
+            case DIVISION -> theSecondVal / theFirstVal;
+            case MODULUS -> theSecondVal % theFirstVal;
             default -> throw new IllegalArgumentException("Invalid expression");
         };
     }
@@ -119,16 +119,16 @@ public class OperationElement implements Element {
         }
 
         /**
-         * Checks whether a character is an enumerated operation.
-         * @param character The character we are checking.
-         * @return the operation that the character represents.
-         * @throws IllegalArgumentException if an invalid character is provided.
+         * Checks whether a theCharacter is an enumerated operation.
+         * @param theCharacter The char we are checking.
+         * @return the operation that theCharacter represents.
+         * @throws IllegalArgumentException if an invalid char is provided.
          */
-        static Operation fromChar(final char character) {
+        static Operation fromChar(final char theCharacter) {
             for (final Operation op : Operation.values()) {
-                if (character == op.character) return op;
+                if (theCharacter == op.character) return op;
             }
-            throw new IllegalArgumentException("Invalid character");
+            throw new IllegalArgumentException("Invalid theCharacter");
         }
 
     }

@@ -41,6 +41,12 @@ public class SSTableModel extends DefaultTableModel {
         super.setValueAt(theValue, theRow, theColumn);
     }
 
+    /**
+     * Returns a value at a specific table index.
+     * @param theRow             the row whose value is to be queried
+     * @param theColumn          the column whose value is to be queried
+     * @return The value at a specified table index.
+     */
     @Override
     public Object getValueAt(int theRow, int theColumn) {
         if (theColumn == 0) {
@@ -49,6 +55,12 @@ public class SSTableModel extends DefaultTableModel {
         return super.getValueAt(theRow, theColumn);
     }
 
+    /**
+     * Sets the value at a specific table index.
+     * @param theValue          the new value; this can be null
+     * @param theRow             the row whose value is to be changed
+     * @param theColumn          the column whose value is to be changed
+     */
     @Override
     public void setValueAt(final Object theValue, final int theRow, final int theColumn) {
 
@@ -92,6 +104,12 @@ public class SSTableModel extends DefaultTableModel {
         }
     }
 
+    /**
+     * Boolean for whether a cell can be edited or not. Currently only prevents first column edits.
+     * @param theRow             the row whose value is to be queried
+     * @param theColumn          the column whose value is to be queried
+     * @return True if editable.
+     */
     @Override
     public boolean isCellEditable(final int theRow, int theColumn) {
         return theColumn > 0;

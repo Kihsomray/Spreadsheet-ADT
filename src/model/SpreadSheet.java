@@ -40,8 +40,6 @@ public class SpreadSheet {
      */
     private int myRows;
 
-    private String myCurrentInput; // most recent input into GUI
-
     /**
      * The constructor for the SpreadSheet.
      * @param theRows The initial Rows in the SpreadSheet.
@@ -159,6 +157,7 @@ public class SpreadSheet {
     /**
      * clears the contents of the cells.
      */
+    // Not currently used.
     public void clearCells(){
         for (int col = 0; col < getMyColumns(); col++) {
             for (int row = 0; row < getMyRows(); row++) {
@@ -167,21 +166,6 @@ public class SpreadSheet {
         }
     }
 
-    /**
-     * Method to print all the cells of the spreadsheet.
-     */
-    public void printAllFormulas() {
-        for (int col = 0; col < myColumns; col++) {
-            System.out.println();
-            for (int row = 0; row < myRows; row++) {
-                if (myCells[row][col] != null) {
-                    System.out.println(myCells[row][col].getFormula());
-                } else {
-                    System.out.println("null");
-                }
-            }
-        }
-    }
 
     /**
      * Gets SpreadSheet JFrame instance.

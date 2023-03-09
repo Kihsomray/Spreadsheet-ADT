@@ -77,7 +77,7 @@ public class SSFrame extends JFrame {
 
         // finalize
         createFrame();
-        addFormulaMenu();
+//        addFormulaMenu();
     }
 
     /**
@@ -159,7 +159,7 @@ public class SSFrame extends JFrame {
         myMenuBar.add(new FileMenu(this));
 
         // options menu
-        myMenuBar.add(new OptionsMenu(this));
+//        myMenuBar.add(new OptionsMenu(this));
 
         // help menu
         myMenuBar.add(new HelpMenu());

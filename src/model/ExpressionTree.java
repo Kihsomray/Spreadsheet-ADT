@@ -5,8 +5,6 @@ import model.element.OperationElement;
 import model.element.value.CellElement;
 import model.element.value.LiteralElement;
 import model.element.value.ValueElement;
-
-import java.util.Iterator;
 import java.util.Stack;
 
 /**

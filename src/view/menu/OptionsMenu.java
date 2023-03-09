@@ -91,11 +91,13 @@ public class OptionsMenu extends JMenu implements PropertyChangeListener {
         });
 
     }
+
+    /**
+     * A method to display the formula.
+     */
     private void displayformula() {
 
         adjustValues(displayFormula, KeyEvent.VK_F, e -> {
-
-            // TODO add this
 
         });
 
@@ -104,11 +106,10 @@ public class OptionsMenu extends JMenu implements PropertyChangeListener {
     /**
      * Adds ActionListener to addRows menu item.
      */
+    // Not currently implemented.
     private void addRows() {
 
         adjustValues(addRows, KeyEvent.VK_R, e -> {
-
-            // TODO add this
 
         });
 
@@ -117,11 +118,11 @@ public class OptionsMenu extends JMenu implements PropertyChangeListener {
     /**
      * Adds ActionListener to addColumns menu item.
      */
+    // Not currently implemented.
     private void addColumns() {
 
         adjustValues(addColumns, KeyEvent.VK_C, e -> {
 
-            // TODO add this
 
         });
 
@@ -140,6 +141,11 @@ public class OptionsMenu extends JMenu implements PropertyChangeListener {
         theMenuItem.addActionListener(theActionEvent);
     }
 
+    /**
+     * Shows the formula if a propertyChange is detected in the Table.
+     * @param theEvent A PropertyChangeEvent object describing the event source
+     *          and the property that has changed.
+     */
     @Override
     public void propertyChange(final PropertyChangeEvent theEvent) {
 

@@ -4,6 +4,9 @@ import model.Cell;
 import model.SpreadSheet;
 import model.element.OperationElement;
 
+/**
+ * An element that represents the value of a Cell.
+ */
 public class CellElement implements ValueElement {
 
     /**
@@ -24,7 +27,7 @@ public class CellElement implements ValueElement {
     /**
      * Is the result negative?
      */
-    private boolean myNegative = false;
+    private boolean myNegative;
 
     /**
      * Constructor for the CellElement, only defines the Spreadsheet.
@@ -96,6 +99,10 @@ public class CellElement implements ValueElement {
         return mySpreadSheet.getCellAt(myRow, myColumn);
     }
 
+    /**
+     * A toString method utilized for testing output.
+     * @return A readable String detailing this class.
+     */
     @Override
     public String toString() {
         return "[CE: r-" + myRow + ", c-" + myColumn + "]";

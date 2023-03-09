@@ -15,6 +15,10 @@ import static view.SSFrame.ROW_COLUMN_WIDTH;
  */
 public class SSTable extends JTable {
 
+    /**
+     * Constructor for the table.
+     * @param theModel theTableModel we are building the table off of.
+     */
     public SSTable(final SSTableModel theModel) {
         super(theModel);
         setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {{
