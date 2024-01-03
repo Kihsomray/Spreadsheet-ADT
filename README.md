@@ -3,15 +3,17 @@
 **Due:** Electronic submission (e-mail) and written report (in lecture),
 5:00pm Wednesday, March 8.<br>
 **In-class demo:** Thursday, March 9.
-## Group 2 - Members
+### Members
 - Matt Bauchspies
-- Elroy O Mbabazi
-- Mike N Yarmoshik
-- Max Y Yim
+- Elroy Mbabazi
+- Mike Yarmoshik
+- Max Yim
 ## Task
 Your task in this project is to write a spreadsheet ADT and a program that allows the user
 to assign formulas to cells, view the formulas in the cells of the spreadsheet, and view the
 values computed for all the cells in the spreadsheet.
+
+<img src="https://i.imgur.com/1CoY7yy.png"><p></p>
 ## Organization
 Be sure to organize your files in a sensible way. You will need files for a stack, a queue,
 an expression tree, a spreadsheet, and a variety of other files (such as one for the
